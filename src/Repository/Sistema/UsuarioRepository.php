@@ -51,7 +51,6 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
             ->where($qb->expr()->notIn('u.id', [1]))
             ->andWhere('u.isBaja = :estado')
             ->setParameter('estado', $estado);
-        ;
 
         if($unidad !== 'ALL'){
             $qb->andWhere('un.nombre = :unidad')
@@ -82,8 +81,7 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
                 ->select('t.id')
                 ->from('AppBundle\Entity\Cuadros\Cuadro', 'c')
                 ->leftJoin('c.trabajador', 't')
-                ->where('t.isBaja = false')
-        ;
+                ->where('t.isBaja = false');
 
         $qb = $this->createQueryBuilder('u');
 
@@ -93,8 +91,7 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
             ->andWhere('u.isBaja = false')
             ->andWhere($qb->expr()->notIn('u.id', $sqb->getDQL()))
             ->orderBy('u.nombre', 'ASC')
-            ->setParameter('unidad', $unidad)
-        ;
+            ->setParameter('unidad', $unidad);
 
         if($estado === 'jovenes'){
             $qb->andWhere('u.edad < 36');
@@ -109,8 +106,7 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
                 ->select('t.id')
                 ->from('AppBundle\Entity\Cuadros\Cuadro', 'c')
                 ->leftJoin('c.trabajador', 't')
-                ->where('t.isBaja = false')
-        ;
+                ->where('t.isBaja = false');
 
         $qb = $this->createQueryBuilder('u');
 
@@ -120,8 +116,7 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
             ->andWhere('u.isBaja = false')
             ->andWhere($qb->expr()->in('u.id', $sqb->getDQL()))
             ->orderBy('u.nombre', 'ASC')
-            ->setParameter('unidad', $unidad)
-        ;
+            ->setParameter('unidad', $unidad);
 
         if($estado === 'jovenes'){
             $qb->andWhere('u.edad < 36');
