@@ -100,7 +100,6 @@ function modalShow(title, url, size, height){
     let modalTitle = document.getElementById('modalTitle');
     let ifm = document.getElementById('ifmContent');
     let ifmContent = ifm.contentDocument || el.contentWindow.document;
-    let rand = Math.random() + "";
 
     // Establecer título
     modalTitle.innerHTML = title;
@@ -144,17 +143,6 @@ function boolFormatter(value, row, index){
 // Formato para valores null
 function nullFormatter(value, row, index){
     return (value) ? value : '';
-}
-
-// Formato para arrays
-function arrayFormatter(value, row){
-
-    let str = [];
-
-    if (value.length > 0 && value !== null){
-        str = value;
-    }
-
 }
 
 // Botones de acción editar y vista previa
