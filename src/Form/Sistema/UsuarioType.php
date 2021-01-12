@@ -31,7 +31,6 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $unidad = $options['unidad'];
-        $hasAccount = $options['has_account'];
 
         $builder
             ->add('nombre', TextType::class)

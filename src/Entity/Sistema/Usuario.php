@@ -480,18 +480,4 @@ class Usuario implements UserInterface
     {
         return $this->nombre.' '.$this->apellidos;
     }
-
-    /**
-     * @Assert\IsTrue(
-     *      message = "Usuario sin servicios"
-     * )
-     */
-    public function isUsuarioSistemaValid()
-    {
-        if(!in_array('ROLE_USUARIO', $this->getRoles())){
-            if(is_null($this->getUsername())){
-                return false;
-            }
-        }
-    }
 }

@@ -99,11 +99,7 @@ class UsuarioController extends AbstractController
             'form' => $form->createView(),
             'action' => 'create'
         ]);
-
-        return $this->render('common/notify.html.twig', []);
     }
-
-
 
     /**
      * Formulario para reiniciar password
