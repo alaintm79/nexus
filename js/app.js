@@ -23,15 +23,13 @@ function init(){
     if (forms.length > 0){ // Validación si existe en el DOM
 
         // Bucle para recorrer los formularios para aplicar estilo y evitar el envio
-        var validation = Array.prototype.filter.call(forms, function(form) {
+        Array.prototype.filter.call(forms, function(form) {
             form.addEventListener('submit', function(event) {
                 if (form.checkValidity() === false) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
 
-                // let btnSubmit = document.getElementById('btnSubmit');
-                console.log(btnSubmit);
                 form.classList.add('was-validated');
             }, false);
         });
@@ -103,7 +101,6 @@ function modalShow(title, url, size, height){
     let ifm = document.getElementById('ifmContent');
     let ifmContent = ifm.contentDocument || el.contentWindow.document;
     let rand = Math.random() + "";
-    let idIfm = rand * 1000000000000000000;
 
     // Establecer título
     modalTitle.innerHTML = title;
@@ -158,9 +155,6 @@ function arrayFormatter(value, row){
         str = value;
     }
 
-    console.log(value);
-
-    // return str.join(', ');
 }
 
 // Botones de acción editar y vista previa
