@@ -17,7 +17,6 @@ class UserChecker implements UserCheckerInterface
 
         // user is deleted, show a generic Account Not Found message.
         if ($user->getIsBaja() || !$user->getIsActive()) {
-            // throw new AccountDeletedException();
              throw new AuthenticationException();
         }
     }

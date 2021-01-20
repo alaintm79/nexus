@@ -213,7 +213,7 @@ class UsuarioController extends AbstractController
      *      name="app_usuario_password",
      *      methods={"GET","POST"})
      */
-    public function password(Request $request, Usuario $usuario, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function changePassword(Request $request, Usuario $usuario, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $form = $this->createForm(UsuarioPasswordType::class, $usuario);
 
@@ -235,13 +235,13 @@ class UsuarioController extends AbstractController
     }
 
     /**
-     * Change password an existing usuario entity at other unidad.
+     * Change password an existing usuario entity.
      *
-     * @Route("/change-password",
+     * @Route("/mi-clave",
      *      name="app_usuario_change_password",
      *      methods={"GET","POST"})
      */
-    public function changePassword(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function miClave(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
         $usuario = $this->getUser();
         $form = $this->createForm(UsuarioPasswordType::class);
@@ -252,7 +252,7 @@ class UsuarioController extends AbstractController
 
             $this->userPassword($usuario, $form->get('plainPassword')->getData(), $passwordEncoder);
             $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('notice', 'Clave modificada con exito!');
+            $this->addFlash('notice', 'Su clave a sido modificada con exito!');
 
             return $this->render('common/notify.html.twig', []);
         }
@@ -269,7 +269,6 @@ class UsuarioController extends AbstractController
     private function userPassword($usuario, $password, $encoder)
     {
         $usuario->setPassword($encoder->encodePassword($usuario, $password));
-        $usuario->setCheckPassword(\hash('sha256', $usuario->getId().$password));
 
         // Sincronización clave con dominio
         if($this->getParameter('app_pass_sync') === 'domain'){

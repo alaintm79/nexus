@@ -3,6 +3,7 @@
 namespace App\Entity\Sistema;
 
 use App\Entity\Sistema\Grupo;
+use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\Sistema\RolRepository;
 
@@ -12,12 +13,7 @@ use App\Repository\Sistema\RolRepository;
  */
 class Rol
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdTrait;
 
     /**
      * @ORM\Column(type="string", length=25)
@@ -33,11 +29,6 @@ class Rol
      * @ORM\ManyToOne(targetEntity=Grupo::class)
      */
     private $grupo;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getRol(): ?string
     {

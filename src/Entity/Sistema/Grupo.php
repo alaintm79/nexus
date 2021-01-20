@@ -2,6 +2,7 @@
 
 namespace App\Entity\Sistema;
 
+use App\Entity\Traits\IdTrait;
 use App\Repository\Sistema\GrupoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,22 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Grupo
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdTrait;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
     private $grupo;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getGrupo(): ?string
     {

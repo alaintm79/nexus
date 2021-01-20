@@ -2,6 +2,7 @@
 
 namespace App\Entity\Sistema;
 
+use App\Entity\Traits\IdTrait;
 use App\Repository\Sistema\UnidadRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,12 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Unidad
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdTrait;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
@@ -29,11 +25,6 @@ class Unidad
      * @ORM\Column(name="dominio", type="string", length=150)
      */
     private $dominio;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getNombre(): ?string
     {

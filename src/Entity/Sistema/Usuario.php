@@ -2,13 +2,17 @@
 
 namespace App\Entity\Sistema;
 
+use App\Entity\Traits\BajaTrait;
+use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\IsActiveTrait;
+use App\Entity\Traits\ObservacionTrait;
+use App\Entity\Traits\TimeStampableTrait;
 use App\Repository\Sistema\UsuarioRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\DateTime;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Table(name="nexus.nx_usuarios")
@@ -19,12 +23,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Usuario implements UserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdTrait, IsActiveTrait, TimeStampableTrait, BajaTrait, ObservacionTrait;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true, nullable=true)
@@ -109,21 +108,6 @@ class Usuario implements UserInterface
     private $servicio = array();
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_active", type="boolean", nullable=true)
-     */
-    private $isActive = false;
-
-    /**
-     * @var DateTime $fechaCreado
-     * @Gedmo\Timestampable(on="create")
-     *
-     * @ORM\Column(name="fecha_creado", type="datetime")
-     */
-    private $fechaCreado;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="fecha_alta", type="datetime", nullable=true)
@@ -133,48 +117,9 @@ class Usuario implements UserInterface
     /**
      * @var bool
      *
-     * @ORM\Column(name="is_baja", type="boolean", nullable=true)
-     */
-    private $isBaja = false;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="fecha_baja", type="datetime", nullable=true)
-     */
-    private $fechaBaja;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="check_password", type="text", nullable=true)
-     */
-    private $checkPassword;
-
-    /**
-     * @var bool
-     *
      * @ORM\Column(name="is_sync_password", type="boolean", nullable=true)
      */
     private $isSyncPassword;
-
-    /**
-     * @var \DateTime $fechaModificacion
-     *
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(name="fecha_modificacion", type="datetime")
-     */
-    private $fechaModificacion;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $observacion;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     /**
      * A visual identifier that represents this user.
@@ -364,18 +309,6 @@ class Usuario implements UserInterface
         return $this;
     }
 
-    public function getIsActive(): ?bool
-    {
-        return $this->isActive;
-    }
-
-    public function setIsActive(?bool $isActive): self
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
     public function getFechaAlta(): ?\DateTimeInterface
     {
         return $this->fechaAlta;
@@ -388,42 +321,6 @@ class Usuario implements UserInterface
         return $this;
     }
 
-    public function getIsBaja(): ?bool
-    {
-        return $this->isBaja;
-    }
-
-    public function setIsBaja(?bool $isBaja): self
-    {
-        $this->isBaja = $isBaja;
-
-        return $this;
-    }
-
-    public function getFechaBaja(): ?\DateTimeInterface
-    {
-        return $this->fechaBaja;
-    }
-
-    public function setFechaBaja(?\DateTimeInterface $fechaBaja): self
-    {
-        $this->fechaBaja = $fechaBaja;
-
-        return $this;
-    }
-
-    public function getCheckPassword(): ?string
-    {
-        return $this->checkPassword;
-    }
-
-    public function setCheckPassword(?string $checkPassword): self
-    {
-        $this->checkPassword = $checkPassword;
-
-        return $this;
-    }
-
     public function getIsSyncPassword(): ?bool
     {
         return $this->isSyncPassword;
@@ -432,42 +329,6 @@ class Usuario implements UserInterface
     public function setIsSyncPassword(?bool $isSyncPassword): self
     {
         $this->isSyncPassword = $isSyncPassword;
-
-        return $this;
-    }
-
-    public function getFechaCreado(): ?\DateTimeInterface
-    {
-        return $this->fechaCreado;
-    }
-
-    public function setFechaCreado(\DateTimeInterface $fechaCreado): self
-    {
-        $this->fechaCreado = $fechaCreado;
-
-        return $this;
-    }
-
-    public function getFechaModificacion(): ?\DateTimeInterface
-    {
-        return $this->fechaModificacion;
-    }
-
-    public function setFechaModificacion(?\DateTimeInterface $fechaModificacion): self
-    {
-        $this->fechaModificacion = $fechaModificacion;
-
-        return $this;
-    }
-
-    public function getObservacion(): ?string
-    {
-        return $this->observacion;
-    }
-
-    public function setObservacion(?string $observacion): self
-    {
-        $this->observacion = $observacion;
 
         return $this;
     }

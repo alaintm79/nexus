@@ -2,6 +2,7 @@
 
 namespace App\Entity\Sistema;
 
+use App\Entity\Traits\IdTrait;
 use App\Repository\Sistema\PlazaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -14,22 +15,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Plaza
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use IdTrait;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
     private $nombre;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getNombre(): ?string
     {
