@@ -15,8 +15,6 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UsuarioType extends AbstractType
@@ -31,6 +29,7 @@ class UsuarioType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $unidad = $options['unidad'];
+        $action = $options['action'];
 
         $builder
             ->add('nombre', TextType::class)
@@ -65,7 +64,7 @@ class UsuarioType extends AbstractType
             ])
             ->add('hasAccount', CheckboxType::class, [
                     'required' => false,
-                    'label' => 'Crear',
+                    'label' => false,
                 ])
             ->add('username', TextType::class, [
                 'required' => true,
@@ -82,7 +81,7 @@ class UsuarioType extends AbstractType
                     'label' => 'Clave',
                 ],
                 'second_options' => ['label' => 'Repetir Clave'],
-                'required' => true,
+                'required' => $action == 'new' ? true : false,
             ])
             ->add('servicio', ChoiceType::class, [
                 'choices' => $this->getServicios(),
@@ -97,29 +96,6 @@ class UsuarioType extends AbstractType
                 'required' => false,
             ])
         ;
-
-        /*
-         * EventListener
-         */
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event){
-            $usuario = $event->getData();
-            $form = $event->getForm();
-
-            if (null !== $usuario->getId()) {
-
-                $form->add('isBaja', CheckboxType::class, [
-                    'label' => 'No / Si',
-                    'required' => false,
-                ])
-                ->add('fechaBaja', DateType::class,[
-                    'widget'   => 'single_text',
-                    'required' => false,
-                    'label'    => 'Fecha baja',
-                    'html5' => true,
-                ]);
-            }
-        });
     }
 
     private function getRoles()
@@ -148,7 +124,7 @@ class UsuarioType extends AbstractType
                 'usuarioSistemaValid' => 'roles',
             ],
             'unidad' => null,
-            'has_account' => null
+            'action' => null,
         ]);
     }
 }

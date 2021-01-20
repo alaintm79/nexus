@@ -11,9 +11,33 @@ $('#modal').on('hidden.bs.modal', function (e) {
 // Acciones
 window.operateEvents = {
     'click .btn-modal-edit': function (e, value, row, index) {
-        modalShow('Modificar Usuario', '/usuarios/' + row.id + '/edit', 'modal-lg', '796')
+        modalShow('Modificar Usuario', '/sistema/usuarios/' + row.id + '/edit', 'modal-lg', '713')
+    },
+    'click .btn-modal-password': function (e, value, row, index) {
+        modalShow('Modificar Clave', '/sistema/usuarios/' + row.id + '/password', 'modal-lg', '180')
     }
 };
+
+function operateFormatterByAdmin(value, row, index) {
+    return [
+        `<div class="btn-group btn-group-sm" role="group" aria-label="Acciones">`,
+        `<button class="btn btn-secondary btn-modal-edit" title="Modificar" data-toggle="tooltip" data-placement="top">`,
+        `<i class="fas fa-pencil-alt fa-sm"></i>`,
+        `</button>`,
+        `</div>`
+    ].join('')
+}
+
+function operateFormatterByGestor(value, row, index) {
+    let hasAccount = row.hasAccount === true? ' btn-modal-password" ' : 'disabled"';
+    return [
+        `<div class="btn-group btn-group-sm" role="group" aria-label="Acciones">`,
+        `<button class="btn btn-secondary ${hasAccount}" title="Modificar" data-toggle="tooltip" data-placement="top">`,
+        `<i class="fas fa-pencil-alt fa-sm"></i>`,
+        `</button>`,
+        `</div>`
+    ].join('')
+}
 
 // Formatos
 function isActiveFormatter(value, row, index){

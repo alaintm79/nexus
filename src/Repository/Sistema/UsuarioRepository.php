@@ -36,13 +36,13 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         $this->_em->flush();
     }
 
-    public function findAll ($unidad = 'ALL', $estado = 'activos'): array
+    public function findAll ($unidad = 'ALL', $estado = 'registrados'): array
     {
-        $estado = $estado === 'activos' ? true : false;
+        $estado = $estado === 'registrados' ? false : true;
         $qb = $this->createQueryBuilder('u');
 
         $qb->select("u.id, u.nombre, u.apellidos, u.ci, COALESCE(u.username, '') AS usuario, COALESCE(u.correo, '') AS correo")
-            ->addSelect('u.isActive, u.isSyncPassword, u.roles')
+            ->addSelect('u.hasAccount, u.isActive, u.isSyncPassword, u.roles')
             ->addSelect("COALESCE(u.observacion, '') AS observacion")
             ->addSelect('un.nombre AS unidad')
             ->addSelect('p.nombre AS plaza')

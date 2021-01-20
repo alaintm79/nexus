@@ -1,5 +1,4 @@
 const hasAccount = document.getElementById('hasAccount');
-// const action = '{{ action }}';
 
 function userAcount(){
     let forms = document.querySelectorAll('.account');

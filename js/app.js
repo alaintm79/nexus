@@ -246,4 +246,3 @@ if(btnCancel){
         window.parent.closeModal();
     }, false);
 }
-
