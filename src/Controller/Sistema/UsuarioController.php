@@ -264,6 +264,18 @@ class UsuarioController extends AbstractController
     }
 
     /**
+     * Reporte de usuarios
+     */
+    public function reporteUsuarios(Request $request, UsuarioRepository $usuarios): Response
+    {
+        $unidad = $this->isGranted('ROLE_NX_ADMIN') ? 'ALL' : $request->getSession()->get('_unidad');
+
+        return $this->render('sistema/usuario/_dashboard.html.twig', [
+            'usuarios' => $usuarios->findReporteTotalUsuarios($unidad),
+        ]);
+    }
+
+    /**
      *  Establecer clave del usuario
      */
     private function userPassword($usuario, $password, $encoder)
@@ -279,7 +291,8 @@ class UsuarioController extends AbstractController
     /**
      * Sincronización de clave con dominio
      */
-    private function syncPasswordDomain($usuario, $clave): bool{
+    private function syncPasswordDomain($usuario, $clave): bool
+    {
 
         if($this->isHostAlive($this->getParameter('app_ssh2_host'))){
             $ssh = new SSH2($this->getParameter('app_ssh2_host'));

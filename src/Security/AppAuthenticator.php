@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Sistema\AccessLog;
 use App\Entity\Sistema\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -9,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Core\Security;
@@ -71,7 +73,7 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
 
         if (!$user) {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Usuario no valido!');
+            throw new CustomUserMessageAuthenticationException('Usuario no valido.');
         }
 
         return $user;
@@ -101,11 +103,36 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
             $token->getUser()->getUnidad()->getNombre()
         );
 
+        $this->log($request, 'LOGIN');
+
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
+    }
+
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    {
+        $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+
+        $this->log($request, 'DENIED');
+
+        return new RedirectResponse($this->getLoginUrl());
+    }
+
+    public function log(Request $request, string $action)
+    {
+        $log = new AccessLog();
+
+        $log->setUsername($request->request->get('username'));
+        $log->setAction($action);
+        $log->setIp($request->getClientIp());
+
+        $this->entityManager->persist($log);
+        $this->entityManager->flush();
+
     }
 
     protected function getLoginUrl()
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
+
 }

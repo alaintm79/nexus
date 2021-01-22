@@ -4,6 +4,7 @@ namespace App\Repository\Sistema;
 
 use App\Entity\Sistema\Usuario;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -36,7 +37,7 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         $this->_em->flush();
     }
 
-    public function findAll ($unidad = 'ALL', $estado = 'registrados'): array
+    public function findAll (string $unidad = 'ALL', string $estado = 'registrados'): array
     {
         $estado = $estado === 'registrados' ? false : true;
         $qb = $this->createQueryBuilder('u');
@@ -75,7 +76,7 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
             ->getOneOrNullResult();
     }
 
-    public function findNoCuadrosByUnidad ($unidad, $estado): array
+    public function findNoCuadrosByUnidad ($unidad, $estado): QueryBuilder
     {
         $sqb = $this->_em->createQueryBuilder()
                 ->select('t.id')
@@ -100,7 +101,7 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         return $qb;
     }
 
-    public function findCuadrosByUnidad ($unidad, $estado): array
+    public function findCuadrosByUnidad ($unidad, $estado): QueryBuilder
     {
         $sqb = $this->_em->createQueryBuilder()
                 ->select('t.id')
@@ -125,16 +126,27 @@ class UsuarioRepository extends ServiceEntityRepository implements PasswordUpgra
         return $qb;
     }
 
-    public function findTotalesUsuarios(): array
+    public function findReporteTotalUsuarios(string $unidad = 'ALL'): array
     {
-        return $this->createQueryBuilder('u')
-            ->select("SUM(( CASE WHEN( u.usuario IS NOT NULL ) THEN 1 ELSE 0 END )) AS total")
-            ->addSelect("SUM(( CASE WHEN( u.isActive = TRUE ) THEN 1 ELSE 0 END )) AS activos")
-            ->addSelect("SUM(( CASE WHEN( u.isActive = FALSE ) THEN 1 ELSE 0 END )) AS inactivos")
-            ->where('u.isBaja = FALSE')
-            ->andWhere('u.usuario IS NOT NULL')
-            ->getQuery()
-            ->useQueryCache(true)
-            ->getScalarResult();
+        $qb = $this->createQueryBuilder('u')
+            ->select("SUM(( CASE WHEN( u.isBaja = FALSE ) THEN 1 ELSE 0 END )) AS trabajadores")
+            ->addSelect("SUM(( CASE WHEN( u.username IS NOT NULL ) THEN 1 ELSE 0 END )) AS usuarios")
+            ->addSelect("SUM(( CASE WHEN( u.isActive = TRUE ) THEN 1 ELSE 0 END )) AS usuarios_activos")
+            ->addSelect("SUM(( CASE WHEN( u.isActive = FALSE ) THEN 1 ELSE 0 END )) AS usuarios_inactivos");
+
+        if($unidad !== 'ALL'){
+            $qb->addSelect('un.nombre AS unidad')
+                ->join('u.unidad', 'un')
+                ->where('u.isBaja = FALSE')
+                ->groupBy('un.nombre')
+                ->andWhere('un.nombre = :unidad')
+                ->setParameter('unidad', $unidad);
+        }
+
+        $reporte = $qb->getQuery()
+                    ->useQueryCache(true)
+                    ->getScalarResult();
+
+        return $reporte[0];
     }
 }
