@@ -143,11 +143,11 @@ class Usuario implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $activeRoles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $activeRoles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return array_unique($activeRoles);
     }
 
     public function setRoles(array $roles): self

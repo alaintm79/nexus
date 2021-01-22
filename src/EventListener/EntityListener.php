@@ -30,10 +30,7 @@ class EntityListener
     {
         $entity = $args->getEntity();
 
-        if ($entity instanceof AccessLog) {
-            return;
-        }
-        if ($entity instanceof ActionLog) {
+        if ($entity instanceof AccessLog || $entity instanceof ActionLog) {
             return;
         }
     }
@@ -45,10 +42,7 @@ class EntityListener
     {
         $entity = $args->getEntity();
 
-        if ($entity instanceof AccessLog) {
-            return;
-        }
-        if ($entity instanceof ActionLog) {
+        if ($entity instanceof AccessLog || $entity instanceof ActionLog) {
             return;
         }
     }
@@ -60,10 +54,7 @@ class EntityListener
     {
         $entity = $args->getEntity();
 
-        if ($entity instanceof AccessLog) {
-            return;
-        }
-        if ($entity instanceof ActionLog) {
+        if ($entity instanceof AccessLog || $entity instanceof ActionLog) {
             return;
         }
 
@@ -77,10 +68,7 @@ class EntityListener
     {
         $entity = $args->getEntity();
 
-        if ($entity instanceof AccessLog) {
-            return;
-        }
-        if ($entity instanceof ActionLog) {
+        if ($entity instanceof AccessLog || $entity instanceof ActionLog) {
             return;
         }
 
