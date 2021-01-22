@@ -26,30 +26,6 @@ class EntityListener
     /**
      * @inheritdoc
      */
-    public function prePersist(LifecycleEventArgs $args)
-    {
-        $entity = $args->getEntity();
-
-        if ($entity instanceof AccessLog || $entity instanceof ActionLog) {
-            return;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function preUpdate(LifecycleEventArgs $args)
-    {
-        $entity = $args->getEntity();
-
-        if ($entity instanceof AccessLog || $entity instanceof ActionLog) {
-            return;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function postPersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
