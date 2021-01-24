@@ -10,8 +10,13 @@ use Symfony\Component\Security\Core\Security;
 
 class LogRegister{
 
+    /** @var EntityManagerInterface $em */
     protected $em;
+
+    /** @var Security $security */
     protected $security;
+
+    /** @var RequestStack $request */
     protected $request;
 
     public function __construct (EntityManagerInterface $em, Security $security, RequestStack $requestStack)
@@ -24,7 +29,8 @@ class LogRegister{
     /**
      * @inheritdoc
      */
-    public function register($action){
+    public function register($action): void
+    {
 
         $log = new ActionLog();
         $info = $this->request->getCurrentRequest();

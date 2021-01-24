@@ -7,6 +7,7 @@ use App\Form\Sistema\UsuarioBajaType;
 use App\Form\Sistema\UsuarioPasswordType;
 use App\Form\Sistema\UsuarioType;
 use App\Repository\Sistema\UsuarioRepository;
+use App\Util\UsuarioUtil;
 use phpseclib\Net\SSH2;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -81,6 +82,7 @@ class UsuarioController extends AbstractController
             if($form->get('hasAccount')->getData()){
                 $plainPassword = $form->get('plainPassword')->getData();
 
+                $this->setSexoAndEdad($usuario);
                 $this->userPassword($usuario, $plainPassword, $passwordEncoder);
             }
 
@@ -118,10 +120,12 @@ class UsuarioController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $plainPassword = $form->get('plainPassword')->getData();
 
-            if($form->get('hasAccount')->getData() && null !== $plainPassword){
+            $this->setSexoAndEdad($usuario);
 
+            if($form->get('hasAccount')->getData() && null !== $plainPassword){
                 $this->userPassword($usuario, $plainPassword, $passwordEncoder);
             }
 
@@ -308,7 +312,7 @@ class UsuarioController extends AbstractController
     }
 
     /**
-     *  Commprobar si el host esta activo
+     *  Comprobar si el host esta activo
      */
     private function isHostAlive ($ip): bool
     {
@@ -318,5 +322,14 @@ class UsuarioController extends AbstractController
         $process->run();
 
         return $process->isSuccessful();
+    }
+
+    /**
+     *  Establecer sexo y edad
+     */
+    private function setSexoAndEdad(Usuario $usuario)
+    {
+        $usuario->setEdad(UsuarioUtil::edad($usuario->getCi()));
+        $usuario->setSexo(UsuarioUtil::sexo($usuario->getCi()));
     }
 }

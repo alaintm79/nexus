@@ -121,7 +121,7 @@ class UsuarioType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Usuario::class,
             'error_mapping' => [
-                'usuarioSistemaValid' => 'roles',
+                'ciValid' => 'ci',
             ],
             'unidad' => null,
             'action' => null,

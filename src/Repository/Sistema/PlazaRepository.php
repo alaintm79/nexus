@@ -19,7 +19,7 @@ class PlazaRepository extends ServiceEntityRepository
         parent::__construct($registry, Plaza::class);
     }
 
-    public function findPlazas()
+    public function findAll()
     {
         return $this->createQueryBuilder('p')
             ->select("p.id, p.nombre AS plaza")

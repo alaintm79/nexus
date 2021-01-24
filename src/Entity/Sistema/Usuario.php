@@ -27,6 +27,11 @@ class Usuario implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true, nullable=true)
+     * @Assert\Regex(
+     *     pattern     = "/^[a-z]+$/i",
+     *     htmlPattern = "^[a-z]+$",
+     *     message="Este valor no es válido."
+     * )
      */
     private $username;
 
@@ -42,9 +47,13 @@ class Usuario implements UserInterface
     private $password;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="nombre", type="string", length=50)
+     * @Assert\NotBlank
+     * @Assert\Regex(
+     *     pattern     = "/^[a-z ]+$/i",
+     *     htmlPattern = "^[a-z ]+$",
+     *     message="Este valor no es válido."
+     * )
      */
     private $nombre;
 
@@ -52,6 +61,12 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="apellidos", type="string", length=150)
+     * @Assert\NotBlank
+     * @Assert\Regex(
+     *     pattern     = "/^[a-z ]+$/i",
+     *     htmlPattern = "^[a-z ]+$",
+     *     message="Este valor no es válido."
+     * )
      */
     private $apellidos;
 
@@ -59,6 +74,18 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="ci", type="string", length=11, unique=true)
+     * @Assert\Length(
+     *      min = 11,
+     *      max = 11,
+     *      minMessage = "Valor no permitido {{ limit }} 1",
+     *      maxMessage = "Valor no permitido {{ limit }} 2",
+     *      allowEmptyString = false
+     * )
+     * @Assert\Regex(
+     *     pattern     = "/^[0-9]+$/i",
+     *     htmlPattern = "^[0-9]+$",
+     *     message="Este valor no es válido."
+     * )
      */
     private $ci;
 
@@ -72,7 +99,7 @@ class Usuario implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="sexo", type="string", length=1, nullable=true)
+     * @ORM\Column(name="sexo", type="string", length=2, nullable=true)
      */
     private $sexo;
 
@@ -80,6 +107,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="correo", type="string", length=50, unique=true, nullable=true)
+     * @Assert\Email()
      */
     private $correo;
 
@@ -93,12 +121,14 @@ class Usuario implements UserInterface
     /**
      * @ORM\ManyToOne(targetEntity=Unidad::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull
      */
     private $unidad;
 
     /**
      * @ORM\ManyToOne(targetEntity=Plaza::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull
      */
     private $plaza;
 
@@ -111,6 +141,8 @@ class Usuario implements UserInterface
      * @var \DateTime
      *
      * @ORM\Column(name="fecha_alta", type="datetime", nullable=true)
+     * @Assert\NotBlank
+     * @Assert\DateTime()
      */
     private $fechaAlta;
 
@@ -194,7 +226,7 @@ class Usuario implements UserInterface
         return $this->nombre;
     }
 
-    public function setNombre(string $nombre): self
+    public function setNombre(?string $nombre): self
     {
         $this->nombre = $nombre;
 
@@ -206,7 +238,7 @@ class Usuario implements UserInterface
         return $this->apellidos;
     }
 
-    public function setApellidos(string $apellidos): self
+    public function setApellidos(?string $apellidos): self
     {
         $this->apellidos = $apellidos;
 
@@ -331,6 +363,23 @@ class Usuario implements UserInterface
         $this->isSyncPassword = $isSyncPassword;
 
         return $this;
+    }
+
+    /**
+     * @Assert\IsTrue(message="CI no valido")
+     */
+    public function isCiValid()
+    {
+        $ci = $this->ci;
+        $anno = $ci[6] <= 5 ? '19'.substr($ci, 0, 2) : '20'.substr($ci, 0, 2);
+        $mes = substr($ci, 2, 2);
+        $dia = substr($ci, 4, 2);
+
+        if($anno < 1940){
+            return false;
+        }
+
+        return \checkdate($mes, $dia, $anno);
     }
 
     /*
