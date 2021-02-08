@@ -270,7 +270,7 @@ class UsuarioController extends AbstractController
     /**
      * Reporte de usuarios
      */
-    public function reporteUsuarios(Request $request, UsuarioRepository $usuarios): Response
+    public function reporteDashboard(Request $request, UsuarioRepository $usuarios): Response
     {
         $unidad = $this->isGranted('ROLE_NX_ADMIN') ? 'ALL' : $request->getSession()->get('_unidad');
 

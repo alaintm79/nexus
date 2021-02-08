@@ -3,19 +3,21 @@
 namespace App\Form\Sistema;
 
 use App\Entity\Sistema\Usuario;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Sistema\Plaza;
+use App\Entity\Sistema\Unidad;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UsuarioType extends AbstractType
 {
@@ -38,14 +40,14 @@ class UsuarioType extends AbstractType
                 'label' => 'CI',
             ])
             ->add('unidad', EntityType::class, [
-                'class' => 'App\Entity\Sistema\Unidad',
+                'class' => Unidad::class,
                 'label' => 'Ubicación',
                 'query_builder' => function(EntityRepository $er) use ($unidad){
                     return $er->findByNombre($unidad);
                 },
             ])
             ->add('plaza', EntityType::class, [
-                'class' => 'App\Entity\Sistema\Plaza',
+                'class' => Plaza::class,
                 'label' => 'Plaza',
                 'placeholder' => '',
                 'query_builder' => function (EntityRepository $er) {

@@ -32,7 +32,7 @@ class PlazaController extends AbstractController
      *      methods={"GET"}
      * )
      */
-    public function read (PlazaRepository $plaza): Response
+    public function list(PlazaRepository $plaza): Response
     {
         return new JsonResponse($plaza->findAll());
     }

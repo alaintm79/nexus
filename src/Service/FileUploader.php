@@ -16,7 +16,7 @@ class FileUploader
         $this->path = __DIR__.'/../../public';
     }
 
-    public function upload(UploadedFile $file, string $dir = '/uploads', string $name, bool $storeByDate = false)
+    public function upload(UploadedFile $file, string $dir = '/uploads', bool $storeByDate = false, string $name)
     {
         if($storeByDate){
             $date = new \DateTime('now');
