@@ -2,6 +2,8 @@
 
 namespace App\Controller\Sistema;
 
+use App\Controller\Traits\PasswordTrait;
+use App\Controller\Traits\SexoEdadTrait;
 use App\Entity\Sistema\Usuario;
 use App\Form\Sistema\UsuarioBajaType;
 use App\Form\Sistema\UsuarioPasswordType;
@@ -25,6 +27,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UsuarioController extends AbstractController
 {
+    use PasswordTrait, SexoEdadTrait;
+
     /**
      * @Route("/{estado}",
      *      name="app_usuario_index",
@@ -129,8 +133,9 @@ class UsuarioController extends AbstractController
                 $this->userPassword($usuario, $plainPassword, $passwordEncoder);
             }
 
-            $this->getDoctrine()->getManager()->flush();
             $this->addFlash('notice', 'Usuario modificado con exito!');
+
+            $this->getDoctrine()->getManager()->flush();
 
             return $this->render('common/notify.html.twig', []);
         }
@@ -239,35 +244,6 @@ class UsuarioController extends AbstractController
     }
 
     /**
-     * Change password an existing usuario entity.
-     *
-     * @Route("/mi-clave",
-     *      name="app_usuario_change_password",
-     *      methods={"GET","POST"})
-     */
-    public function miClave(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
-    {
-        $usuario = $this->getUser();
-        $form = $this->createForm(UsuarioPasswordType::class);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $this->userPassword($usuario, $form->get('plainPassword')->getData(), $passwordEncoder);
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('notice', 'Su clave a sido modificada con exito!');
-
-            return $this->render('common/notify.html.twig', []);
-        }
-
-        return $this->render('sistema/usuario/modal/password_form.html.twig', [
-            'usuario' => $usuario,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * Reporte de usuarios
      */
     public function reporteDashboard(Request $request, UsuarioRepository $usuarios): Response
@@ -277,59 +253,5 @@ class UsuarioController extends AbstractController
         return $this->render('sistema/usuario/_dashboard.html.twig', [
             'usuarios' => $usuarios->findReporteTotalUsuarios($unidad),
         ]);
-    }
-
-    /**
-     *  Establecer clave del usuario
-     */
-    private function userPassword($usuario, $password, $encoder)
-    {
-        $usuario->setPassword($encoder->encodePassword($usuario, $password));
-
-        // Sincronización clave con dominio
-        if($this->getParameter('app_pass_sync') === 'domain'){
-            $usuario->setIsSyncPassword($this->syncPasswordDomain($usuario->getUsername(), $password));
-        }
-    }
-
-    /**
-     * Sincronización de clave con dominio
-     */
-    private function syncPasswordDomain($usuario, $clave): bool
-    {
-
-        if($this->isHostAlive($this->getParameter('app_ssh2_host'))){
-            $ssh = new SSH2($this->getParameter('app_ssh2_host'));
-            $cmd = "echo %s | sudo /usr/bin/samba-tool user setpassword %s --newpassword='%s'";
-
-            $ssh->login($this->getParameter('app_ssh2_user'), $this->getParameter('app_ssh2_pass'));
-            $ssh->exec(sprintf($cmd, $this->getParameter('app_ssh2_pass'), $usuario, $clave));
-
-            return $ssh->getExitStatus() !== 0 ? false : true;
-        }
-
-        return false;
-    }
-
-    /**
-     *  Comprobar si el host esta activo
-     */
-    private function isHostAlive ($ip): bool
-    {
-        $exec = 'ping -c 1 -W 1 '.$ip.' >/dev/null';
-
-        $process = new Process($exec);
-        $process->run();
-
-        return $process->isSuccessful();
-    }
-
-    /**
-     *  Establecer sexo y edad
-     */
-    private function setSexoAndEdad(Usuario $usuario)
-    {
-        $usuario->setEdad(UsuarioUtil::edad($usuario->getCi()));
-        $usuario->setSexo(UsuarioUtil::sexo($usuario->getCi()));
     }
 }
