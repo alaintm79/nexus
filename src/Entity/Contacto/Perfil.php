@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Entity\Sistema;
+namespace App\Entity\Contacto;
 
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeStampableTrait;
-use App\Repository\Sistema\PlazaRepository;
+use App\Repository\Contacto\PerfilRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="nexus.nx_plazas")
- * @ORM\Entity(repositoryClass=PlazaRepository::class)
- * @UniqueEntity(fields={"nombre"}, message="Plaza ya registrada!.")
+ * @ORM\Table(name="nexus.con_perfiles")
+ * @ORM\Entity(repositoryClass=PerfilRepository::class)
  */
-class Plaza
+class Perfil
 {
     use IdTrait, TimeStampableTrait;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
-    *  @Assert\NotBlank
+     * @var string
+     *
+     * @ORM\Column(name="nombre", type="string", length=255)
+     * @Assert\NotBlank
      */
     private $nombre;
 
@@ -39,8 +39,7 @@ class Plaza
     /*
      *  __toString
      */
-
-    public function __toString (): ?string
+    public function __toString ()
     {
         return $this->nombre;
     }

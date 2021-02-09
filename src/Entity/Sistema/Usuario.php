@@ -8,6 +8,7 @@ use App\Entity\Traits\IsActiveTrait;
 use App\Entity\Traits\ObservacionTrait;
 use App\Entity\Traits\TimeStampableTrait;
 use App\Repository\Sistema\UsuarioRepository;
+use App\Util\UsuarioUtil;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,30 +29,31 @@ class Usuario implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true, nullable=true)
      * @Assert\Regex(
-     *     pattern     = "/^[a-z]+$/i",
-     *     htmlPattern = "^[a-z]+$",
-     *     message="Este valor no es válido."
+     *     pattern     = "/^[a-z0-9]+$/i",
+     *     htmlPattern = "^[a-z0-9]+$",
+     *     message="Este valor no es válido.",
+     *     groups={"registration"}
      * )
      */
     private $username;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="json", nullable=true)
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $password;
 
     /**
      * @ORM\Column(name="nombre", type="string", length=50)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"registration"})
      * @Assert\Regex(
-     *     pattern     = "/^[a-z ]+$/i",
-     *     htmlPattern = "^[a-z ]+$",
+     *     pattern     = "/^[a-zñáéíóú ]+$/i",
+     *     htmlPattern = "^[a-zñáéíóú ]+$",
      *     message="Este valor no es válido."
      * )
      */
@@ -61,10 +63,10 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="apellidos", type="string", length=150)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"registration"})
      * @Assert\Regex(
-     *     pattern     = "/^[a-z ]+$/i",
-     *     htmlPattern = "^[a-z ]+$",
+     *     pattern     = "/^[a-zñáéíóú ]+$/i",
+     *     htmlPattern = "^[a-zñáéíóú ]+$",
      *     message="Este valor no es válido."
      * )
      */
@@ -79,7 +81,8 @@ class Usuario implements UserInterface
      *      max = 11,
      *      minMessage = "Valor no permitido {{ limit }} 1",
      *      maxMessage = "Valor no permitido {{ limit }} 2",
-     *      allowEmptyString = false
+     *      allowEmptyString = false,
+     *      groups = {"registration"}
      * )
      * @Assert\Regex(
      *     pattern     = "/^[0-9]+$/i",
@@ -92,14 +95,14 @@ class Usuario implements UserInterface
     /**
      * @var int
      *
-     * @ORM\Column(name="edad", type="integer", nullable=true)
+     * @ORM\Column(name="edad", type="integer")
      */
     private $edad;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="sexo", type="string", length=2, nullable=true)
+     * @ORM\Column(name="sexo", type="string", length=2)
      */
     private $sexo;
 
@@ -107,7 +110,7 @@ class Usuario implements UserInterface
      * @var string
      *
      * @ORM\Column(name="correo", type="string", length=50, unique=true, nullable=true)
-     * @Assert\Email()
+     * @Assert\Email(groups={"registration"})
      */
     private $correo;
 
@@ -121,14 +124,14 @@ class Usuario implements UserInterface
     /**
      * @ORM\ManyToOne(targetEntity=Unidad::class)
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull
+     * @Assert\NotNull(groups={"registration"})
      */
     private $unidad;
 
     /**
      * @ORM\ManyToOne(targetEntity=Plaza::class)
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotNull
+     * @Assert\NotNull(groups={"registration"})
      */
     private $plaza;
 
@@ -141,7 +144,7 @@ class Usuario implements UserInterface
      * @var \DateTime
      *
      * @ORM\Column(name="fecha_alta", type="datetime", nullable=true)
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"registration"})
      * @Assert\DateTime()
      */
     private $fechaAlta;
@@ -253,6 +256,8 @@ class Usuario implements UserInterface
     public function setCi(?string $ci): self
     {
         $this->ci = $ci;
+        $this->setEdad(UsuarioUtil::edad($ci));
+        $this->setSexo(UsuarioUtil::sexo($ci));
 
         return $this;
     }
@@ -366,7 +371,7 @@ class Usuario implements UserInterface
     }
 
     /**
-     * @Assert\IsTrue(message="CI no valido")
+     * @Assert\IsTrue(message="CI no valido", groups={"registration"})
      */
     public function isCiValid()
     {
