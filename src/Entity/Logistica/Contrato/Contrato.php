@@ -12,7 +12,7 @@ use App\Entity\Traits\TimeStampableTrait;
 use App\Entity\Logistica\ProveedorCliente;
 use App\Entity\Logistica\Contrato\Vigencia;
 use App\Entity\Logistica\Contrato\Categoria;
-use App\Entity\Traits\RegistroTrait;
+use App\Entity\Traits\ContratoCommonTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\Logistica\Contrato\ContratoRepository;
 
@@ -24,7 +24,7 @@ use App\Repository\Logistica\Contrato\ContratoRepository;
  */
 class Contrato
 {
-    use IdTrait, RegistroTrait, ObservacionTrait, IsModificableTrait, TimeStampableTrait;
+    use IdTrait, ContratoCommonTrait, ObservacionTrait, IsModificableTrait, TimeStampableTrait;
 
     /**
      * @var string
@@ -68,27 +68,6 @@ class Contrato
      * @ORM\JoinColumn(name="proveedor_cliente_id", referencedColumnName="id")
      */
     private $proveedorCliente;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Vigencia::class)
-     */
-    private $vigencia;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="valor_cup", type="decimal", precision=10, scale=2, nullable=true)
-     * @Assert\Type(type="numeric", groups={"new","edit"})
-     */
-    private $valorCup;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="valor_cuc", type="decimal", precision=10, scale=2,  nullable=true)
-     * @Assert\Type(type="numeric", groups={"new","edit"})
-     */
-    private $valorCuc;
 
     /**
      * @var float
@@ -256,42 +235,6 @@ class Contrato
     public function setProveedorCliente(?ProveedorCliente $proveedorCliente): self
     {
         $this->proveedorCliente = $proveedorCliente;
-
-        return $this;
-    }
-
-    public function getVigencia(): ?Vigencia
-    {
-        return $this->vigencia;
-    }
-
-    public function setVigencia(?Vigencia $vigencia): self
-    {
-        $this->vigencia = $vigencia;
-
-        return $this;
-    }
-
-    public function getValorCup(): ?string
-    {
-        return $this->valorCup;
-    }
-
-    public function setValorCup(?string $valorCup): self
-    {
-        $this->valorCup = $valorCup;
-
-        return $this;
-    }
-
-    public function getValorCuc(): ?string
-    {
-        return $this->valorCuc;
-    }
-
-    public function setValorCuc(?string $valorCuc): self
-    {
-        $this->valorCuc = $valorCuc;
 
         return $this;
     }

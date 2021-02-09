@@ -5,10 +5,10 @@ namespace App\Entity\Logistica\Contrato;
 use App\Entity\Logistica\Contrato\Contrato;
 use App\Entity\Logistica\Contrato\Estado;
 use App\Entity\Logistica\Contrato\Vigencia;
+use App\Entity\Traits\ContratoCommonTrait;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\IsModificableTrait;
 use App\Entity\Traits\ObservacionTrait;
-use App\Entity\Traits\RegistroTrait;
 use App\Entity\Traits\TimeStampableTrait;
 use App\Repository\Logistica\Contrato\SuplementoRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Suplemento
 {
-    use IdTrait, RegistroTrait, ObservacionTrait, TimeStampableTrait, IsModificableTrait;
+    use IdTrait, ContratoCommonTrait, ObservacionTrait, TimeStampableTrait, IsModificableTrait;
 
     /**
      * @ORM\ManyToOne(targetEntity=Contrato::class)
@@ -50,26 +50,6 @@ class Suplemento
      */
     private $estado;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Vigencia::class)
-     */
-    private $vigencia;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="valor_cup", type="decimal", precision=10, scale=2, nullable=true)
-     * @Assert\Type(type="numeric", groups={"new","edit"})
-     */
-    private $valorCup;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="valor_cuc", type="decimal", precision=10, scale=2,  nullable=true)
-     * @Assert\Type(type="numeric", groups={"new","edit"})
-     */
-    private $valorCuc;
 
     public function getObjeto(): ?string
     {
@@ -115,42 +95,6 @@ class Suplemento
     public function setEstado(?Estado $estado): self
     {
         $this->estado = $estado;
-
-        return $this;
-    }
-
-    public function getVigencia(): ?Vigencia
-    {
-        return $this->vigencia;
-    }
-
-    public function setVigencia(?Vigencia $vigencia): self
-    {
-        $this->vigencia = $vigencia;
-
-        return $this;
-    }
-
-    public function getValorCup(): ?string
-    {
-        return $this->valorCup;
-    }
-
-    public function setValorCup(?string $valorCup): self
-    {
-        $this->valorCup = $valorCup;
-
-        return $this;
-    }
-
-    public function getValorCuc(): ?string
-    {
-        return $this->valorCuc;
-    }
-
-    public function setValorCuc(?string $valorCuc): self
-    {
-        $this->valorCuc = $valorCuc;
 
         return $this;
     }
