@@ -5,7 +5,6 @@ namespace App\Controller\Logistica\Contrato;
 use App\Entity\Logistica\Contrato\Estado;
 use App\Entity\Logistica\Contrato\Contrato;
 use App\Form\Logistica\Contrato\AprobarType;
-use App\Form\Logistica\Contrato\ContratoType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,7 +37,7 @@ class AprobarController extends AbstractController
 
             if(null === $contrato->getNumero()){
                 $active = $em->getRepository(Contrato::class)->findUltimoContrato($contrato->getTipo());
-                $estado = $em->getRepository(Estado::class) ->findOneBy(['estado' => 'APROBADO']);
+                $estado = $em->getRepository(Estado::class)->findOneBy(['estado' => 'APROBADO']);
 
                 $contrato->setNumero($active, $contrato->getTipo());
                 $contrato->setEstado($estado);
@@ -55,5 +54,27 @@ class AprobarController extends AbstractController
             'form' => $form->createView(),
             'contrato' => $contrato,
         ]);
+    }
+
+    /**
+     * Displays a form to approve contrato entity.
+     *
+     * @Route("/{id<[1-9]\d*>}/not-approve",
+     *      name="app_contrato_not_approve",
+     *      methods={"GET", "POST"}
+     * )
+     */
+    public function notApprove(Contrato $contrato): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $estado = $em->getRepository(Estado::class)->findOneBy(['estado' => 'NO APROBADO']);
+
+        $contrato->setEstado($estado);
+
+        $this->addFlash('notice', 'Contrato no aprobado con exito!');
+
+        $em->flush();
+
+        return $this->render('common/notify.html.twig', []);
     }
 }

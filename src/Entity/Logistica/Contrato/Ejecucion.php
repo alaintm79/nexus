@@ -2,11 +2,12 @@
 
 namespace App\Entity\Logistica\Contrato;
 
+use App\Entity\Logistica\Pago\Solicitud;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeStampableTrait;
-use App\Entity\Logistica\SolicitudPago\SolicitudPago;
 use App\Repository\Logistica\Contrato\EjecucionRepository;
 use Doctrine\ORM\Mapping as ORM;
+
 
 /**
  * Ejecucion
@@ -19,7 +20,7 @@ class Ejecucion
     use IdTrait, TimeStampableTrait;
 
     /**
-     * @ORM\OneToOne(targetEntity=SolicitudPago::class)
+     * @ORM\OneToOne(targetEntity=Solicitud::class)
      * @ORM\JoinColumn(name="solicitud_id", referencedColumnName="id")
      */
     private $solicitud;
@@ -67,12 +68,12 @@ class Ejecucion
         return $this;
     }
 
-    public function getSolicitud(): ?SolicitudPago
+    public function getSolicitud(): ?Solicitud
     {
         return $this->solicitud;
     }
 
-    public function setSolicitud(?SolicitudPago $solicitud): self
+    public function setSolicitud(?Solicitud $solicitud): self
     {
         $this->solicitud = $solicitud;
 

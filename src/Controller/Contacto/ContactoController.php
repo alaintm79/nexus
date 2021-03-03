@@ -76,7 +76,7 @@ class ContactoController extends AbstractController
     /**
      * Displays a form to edit an existing contacto entity.
      *
-     * @Route("/{id}/edit",
+     * @Route("/{id<[1-9]\d*>}/edit",
      *      name="app_contacto_edit",
      *      methods={"GET", "POST"}
      * )
@@ -104,7 +104,7 @@ class ContactoController extends AbstractController
     /**
      * Finds and displays a contacto entity.
      *
-     * @Route("/{id}/show",
+     * @Route("/{id<[1-9]\d*>}/show",
      *      name="app_contacto_show",
      *      methods={"GET"}
      * )
@@ -114,6 +114,39 @@ class ContactoController extends AbstractController
         return $this->render('contacto/modal/contacto_show.html.twig', [
             'contacto' => $contacto,
         ]);
+    }
+
+    /**
+     * Deletes a Contacto entity.
+     *
+     * @Route("/{id<[1-9]\d*>}/delete",
+     *      name="app_contacto_delete",
+     *      methods={"GET", "POST"}
+     * )
+     */
+    public function delete(Request $request, Contacto $contacto): Response
+    {
+        if($request->isMethod('POST')){
+
+            if (!$this->isCsrfTokenValid('delete', $request->request->get('token'))) {
+                $this->addFlash('error', 'Imposible eliminar contacto');
+
+                return $this->render('common/notify.html.twig', []);
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($contacto);
+            $em->flush();
+
+            $this->addFlash('notice', 'Contacto eliminado con exito!');
+
+            return $this->render('common/notify.html.twig', []);
+        }
+
+        return $this->render('contacto/modal/contacto_delete.html.twig', [
+            'contacto' => $contacto,
+        ]);
+
     }
 
     /**

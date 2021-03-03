@@ -134,4 +134,16 @@ class ContratoController extends AbstractController
             'contrato' => $contrato,
         ]);
     }
+
+    /**
+     * Reporte del dashboard
+     */
+    public function reporteDashboard(): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        return $this->render('logistica/contrato/_dashboard.html.twig', [
+            'contratos' => $em->getRepository(Contrato::class)->findTotalByEstado(),
+        ]);
+    }
 }

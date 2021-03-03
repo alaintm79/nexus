@@ -20,7 +20,9 @@ class ContactoType extends AbstractType
     {
         $builder
             ->add('nombre', TextType::class)
-            ->add('apellidos', TextType::class)
+            ->add('apellidos', TextType::class, [
+                'required' => false,
+            ])
             ->add('direccion', TextType::class, [
                 'required' => false
             ])

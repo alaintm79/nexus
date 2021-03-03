@@ -33,7 +33,7 @@ class EjecucionRepository extends ServiceEntityRepository
             ->where('c.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
-            ->getResult();
+            ->getScalarResult();
     }
 
     public function findEjecucionByRango(string $inicio, string $fin): array

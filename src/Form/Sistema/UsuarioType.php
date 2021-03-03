@@ -125,6 +125,7 @@ class UsuarioType extends AbstractType
             'error_mapping' => [
                 'ciValid' => 'ci',
             ],
+            'validation_groups' => ['registration'],
             'unidad' => null,
             'action' => null,
         ]);

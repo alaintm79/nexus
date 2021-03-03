@@ -74,7 +74,7 @@ class UbicacionController extends AbstractController
     /**
      * Displays a form to edit an existing ubicacion entity.
      *
-     * @Route("/{id}/edit",
+     * @Route("/{id<[1-9]\d*>}/edit",
      *      name="app_contacto_ubicacion_edit",
      *      methods={"GET", "POST"})
      */

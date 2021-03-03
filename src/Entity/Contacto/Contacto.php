@@ -22,13 +22,14 @@ class Contacto
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255)
+     * @Assert\NotBlank
      */
     private $nombre;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="apellidos", type="string", length=255)
+     * @ORM\Column(name="apellidos", type="string", length=255, nullable=true)
      */
     private $apellidos;
 
@@ -42,42 +43,46 @@ class Contacto
     /**
      * @var string
      *
-     * @ORM\Column(name="telefono_fijo", type="string", length=15, nullable=true, unique=true)
+     * @ORM\Column(name="telefono_fijo", type="string", length=255, nullable=true)
+     * @Assert\Regex(pattern="/^[0-9\/]+$/i", match=true, message="Valor no permitido")
      */
     private $telefonoFijo;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="telefono_fijo_trabajo", type="string", length=15, nullable=true, unique=true)
+     * @ORM\Column(name="telefono_fijo_trabajo", type="string", length=255, nullable=true)
+     * @Assert\Regex(pattern="/^[0-9\/]+$/i", match=true, message="Valor no permitido")
      */
     private $telefonoFijoTrabajo;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="extension", type="string", length=50, nullable=true)
+     * @ORM\Column(name="extension", type="string", length=150, nullable=true)
+     * @Assert\Regex(pattern="/^[0-9\/]+$/i", match=true, message="Valor no permitido")
      */
     private $extension;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="telefono_movil", type="string", length=15, nullable=true, unique=true)
+     * @ORM\Column(name="telefono_movil", type="string", length=255, nullable=true)
+     * @Assert\Regex(pattern="/^[0-9\/]+$/i", match=true, message="Valor no permitido")
      */
     private $telefonoMovil;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="correo1", type="string", length=150, nullable=true, unique=true)
+     * @ORM\Column(name="correo1", type="string", length=150, nullable=true)
      */
     private $correo1;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="correo2", type="string", length=150, nullable=true, unique=true)
+     * @ORM\Column(name="correo2", type="string", length=150, nullable=true)
      */
     private $correo2;
 

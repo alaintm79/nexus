@@ -2,6 +2,7 @@
 
 namespace App\Controller\Logistica\Contrato;
 
+use App\Controller\Logistica\Traits\VigenciaTrait;
 use App\Entity\Logistica\Contrato\Estado;
 use App\Form\Logistica\Contrato\FirmaType;
 use App\Entity\Logistica\Contrato\Contrato;
@@ -18,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class FirmaController extends AbstractController
 {
+    use VigenciaTrait;
     /**
      * Displays a form to approve contrato entity.
      *
@@ -47,7 +49,7 @@ class FirmaController extends AbstractController
                 $firma = $contrato->getFechaFirma()->format('Y-m-d');
                 $fechaVigencia = new \DateTime($firma);
 
-                $contrato->setFechaVigencia($fechaVigencia->modify($this->vigencia($vigencia)));
+                $contrato->setFechaVigencia($fechaVigencia->modify($this->vigenciaFormat($vigencia)));
             }
 
             $contrato->setEstado($estado);
@@ -64,33 +66,5 @@ class FirmaController extends AbstractController
             'form' => $form->createView(),
             'contrato' => $contrato,
         ]);
-    }
-
-    private function vigencia(string $vigencia): ?string
-    {
-        switch($vigencia){
-            case '6 MESES':
-                $vigencia = '+6 month';
-                break;
-            case '1 AÑO':
-                $vigencia = '+1 years';
-                break;
-            case '2 AÑOS':
-                $vigencia = '+2 years';
-                break;
-            case '3 AÑOS':
-                $vigencia = '+3 years';
-                break;
-            case '4 AÑOS':
-                $vigencia = '+4 years';
-                break;
-            case '5 AÑOS':
-                $vigencia = '+5 years';
-                break;
-            default:
-                return null;
-        }
-
-        return $vigencia;
     }
 }

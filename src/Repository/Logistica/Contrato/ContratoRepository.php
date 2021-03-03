@@ -195,9 +195,7 @@ class ContratoRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    /* Reportes */
-
-    public function getTotales(): array
+    public function findTotalByEstado(): array
     {
 
         $reporte = $this->createQueryBuilder('c')
@@ -206,70 +204,6 @@ class ContratoRepository extends ServiceEntityRepository
             ->addSelect("SUM(( CASE WHEN( e.estado = 'REVISION' )  THEN 1 ELSE 0 END )) AS revision")
             ->addSelect("SUM(( CASE WHEN( e.estado = 'CANCELADO' )  THEN 1 ELSE 0 END )) AS cancelados")
             ->addSelect("SUM(( CASE WHEN( DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) <= 0 )  THEN 1 ELSE 0 END )) AS vencidos")
-            ->leftJoin('c.estado', 'e')
-            ->getQuery()
-            ->useQueryCache(true)
-            ->getArrayResult();
-
-        return $reporte[0];
-    }
-
-    public function findTotalesByEstadoAndUEB(): array
-    {
-
-        return $this->createQueryBuilder('c')
-            ->select('u.nombre AS unidad')
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'FIRMADO' AND c.tipo = 'p' ) THEN 1 ELSE 0 END )) AS firmados_proveedor")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'FIRMADO' AND c.tipo = 'c' ) THEN 1 ELSE 0 END )) AS firmados_cliente")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'APROBADO' AND c.tipo = 'p' ) THEN 1 ELSE 0 END )) AS aprobados_proveedor")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'APROBADO' AND c.tipo = 'c' ) THEN 1 ELSE 0 END )) AS aprobados_cliente")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'REVISION' AND c.tipo = 'p' ) THEN 1 ELSE 0 END )) AS revision_proveedor")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'REVISION' AND c.tipo = 'c' ) THEN 1 ELSE 0 END )) AS revision_cliente")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'CANCELADO' AND c.tipo = 'p' ) THEN 1 ELSE 0 END )) AS cancelados_proveedor")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'CANCELADO' AND c.tipo = 'c' ) THEN 1 ELSE 0 END )) AS cancelados_cliente")
-            ->leftJoin('c.estado', 'e')
-            ->leftJoin('c.procedencia', 'u')
-            ->groupBy('u.nombre')
-            ->orderBy('u.nombre')
-            ->getQuery()
-            ->useQueryCache(true)
-            ->getScalarResult();
-    }
-
-    public function findTiempoEstimadoByUEB(): array
-    {
-
-        return $this->createQueryBuilder('c')
-            ->select('u.nombre AS unidad')
-            ->addSelect("AVG(DATE_DIFF(c.fechaFirma, c.fechaAprobado)) AS estimado")
-            ->leftJoin('c.estado', 'e')
-            ->leftJoin('c.procedencia', 'u')
-            ->where('c.tipo = :tipo')
-            ->andWhere('e.estado = :estado')
-            ->setParameter('tipo', 'p')
-            ->setParameter('estado', 'FIRMADO')
-            ->groupBy('u.nombre')
-            ->orderBy('u.nombre')
-            ->getQuery()
-            ->useQueryCache(true)
-            ->getScalarResult();
-    }
-
-    public function getAlertasAndAvisos(): array
-    {
-
-        $reporte = $this->createQueryBuilder('c')
-            ->select("SUM(( CASE WHEN( DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) <= 30 AND DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) >= 1 )  THEN 1 ELSE 0 END )) AS ctos_30")
-            ->addSelect("SUM(( CASE WHEN( DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) <= 0 )  THEN 1 ELSE 0 END )) AS ctos_vencidos")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'REVISION' )  THEN 1 ELSE 0 END )) AS ctos_revision")
-            ->addSelect("SUM(( CASE WHEN( DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) <= 60 AND DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) >= 31 )  THEN 1 ELSE 0 END )) AS ctos_60")
-            ->addSelect("SUM(( CASE WHEN( DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) <= 90 AND DATE_DIFF(c.fechaVigencia, CURRENT_DATE()) >= 61 )  THEN 1 ELSE 0 END )) AS ctos_90")
-            ->addSelect("SUM(( CASE WHEN( DATE_DIFF(CURRENT_DATE(), c.fechaAprobado ) >= 90 AND e.estado = 'APROBADO' )  THEN 1 ELSE 0 END )) AS apdos_90")
-            ->addSelect("SUM(( CASE WHEN( DATE_DIFF(CURRENT_DATE(), c.fechaAprobado ) >= 45 AND DATE_DIFF(CURRENT_DATE(), c.fechaAprobado ) < 90 AND e.estado = 'APROBADO' )  THEN 1 ELSE 0 END )) AS apdos_45")
-            ->addSelect("SUM(( CASE WHEN( DATE_DIFF(CURRENT_DATE(), c.fechaAprobado ) < 45 AND e.estado = 'APROBADO' )  THEN 1 ELSE 0 END )) AS apdos_lt_45")
-            ->addSelect("SUM(( CASE WHEN((c.valorEjecucionCup = 0 AND c.valorEjecucionCuc = 0) AND e.estado = 'FIRMADO' )  THEN 1 ELSE 0 END )) AS sin_ejecucion")
-            ->addSelect("SUM(( CASE WHEN((c.valorEjecucionCup = 0) AND e.estado = 'FIRMADO' )  THEN 1 ELSE 0 END )) AS sin_ejecucion_cup")
-            ->addSelect("SUM(( CASE WHEN((c.valorEjecucionCuc = 0) AND e.estado = 'FIRMADO' )  THEN 1 ELSE 0 END )) AS sin_ejecucion_cuc")
             ->leftJoin('c.estado', 'e')
             ->getQuery()
             ->useQueryCache(true)
@@ -339,20 +273,12 @@ class ContratoRepository extends ServiceEntityRepository
             $qb->where("c.valorEjecucionCup = 0 AND c.valorEjecucionCuc = 0 AND e.estado = 'FIRMADO'");
         }
 
-        if($nombre === 'sin-ejecucion-cup'){
-            $qb->where("c.valorEjecucionCup = 0 AND e.estado = 'FIRMADO'");
-        }
-
-        if($nombre === 'sin-ejecucion-cuc'){
-            $qb->where("c.valorEjecucionCuc = 0 AND e.estado = 'FIRMADO'");
-        }
-
         return $qb->getQuery()
             ->getResult();
     }
 
     /* Menu */
-    public function queryContratosVigenteProveedores()
+    public function findContratosVigenteProveedores()
     {
         return $this->createQueryBuilder('c')
             ->select('c, cs')

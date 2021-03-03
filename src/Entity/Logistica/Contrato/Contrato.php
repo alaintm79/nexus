@@ -2,19 +2,19 @@
 
 namespace App\Entity\Logistica\Contrato;
 
-use App\Entity\Sistema\Unidad;
-use App\Entity\Traits\IdTrait;
-use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Traits\ObservacionTrait;
-use App\Entity\Logistica\Contrato\Estado;
-use App\Entity\Traits\IsModificableTrait;
-use App\Entity\Traits\TimeStampableTrait;
-use App\Entity\Logistica\ProveedorCliente;
-use App\Entity\Logistica\Contrato\Vigencia;
 use App\Entity\Logistica\Contrato\Categoria;
+use App\Entity\Logistica\Contrato\Estado;
+use App\Entity\Logistica\Contrato\Vigencia;
+use App\Entity\Logistica\ProveedorCliente;
+use App\Entity\Sistema\Unidad;
 use App\Entity\Traits\ContratoCommonTrait;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Traits\IdTrait;
+use App\Entity\Traits\IsModificableTrait;
+use App\Entity\Traits\ObservacionTrait;
+use App\Entity\Traits\TimeStampableTrait;
 use App\Repository\Logistica\Contrato\ContratoRepository;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Contrato

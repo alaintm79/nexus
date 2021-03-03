@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class HomeController extends AbstractController
 {
     /**
-     * @Route("/nexus", name="app_home")
+     * @Route("/", name="app_home")
      */
     public function index(): Response
     {

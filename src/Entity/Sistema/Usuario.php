@@ -29,8 +29,8 @@ class Usuario implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true, nullable=true)
      * @Assert\Regex(
-     *     pattern     = "/^[a-z0-9]+$/i",
-     *     htmlPattern = "^[a-z0-9]+$",
+     *     pattern     = "/^[a-z0-9.]+$/i",
+     *     htmlPattern = "^[a-z0-9.]+$",
      *     message="Este valor no es válido.",
      *     groups={"registration"}
      * )

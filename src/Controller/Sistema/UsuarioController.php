@@ -80,6 +80,7 @@ class UsuarioController extends AbstractController
 
             if($form->get('hasAccount')->getData()){
                 $plainPassword = $form->get('plainPassword')->getData();
+                $usuario->setIsActive(true);
 
                 $this->userPassword($usuario, $plainPassword, $passwordEncoder);
             }

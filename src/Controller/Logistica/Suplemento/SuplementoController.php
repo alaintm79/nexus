@@ -2,8 +2,6 @@
 
 namespace App\Controller\Logistica\Suplemento;
 
-use App\Utils\Vigencia;
-use App\Entity\Logistica\Contrato\Contrato;
 use App\Entity\Logistica\Contrato\Estado;
 use App\Entity\Logistica\Contrato\Suplemento;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +12,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\Logistica\Contrato\ContratoRepository;
 use App\Repository\Logistica\Contrato\SuplementoRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -87,6 +84,7 @@ class SuplementoController extends AbstractController
 
         return $this->render('logistica/suplemento/modal/suplemento_form.html.twig', [
             'contrato' => $contrato,
+            'suplemento' => $suplemento,
             'form' => $form->createView(),
         ]);
     }

@@ -97,7 +97,7 @@ trait ContratoCommonTrait {
      * @ORM\Column(name="fecha_firma", type="date", nullable=true)
      * @Assert\Date(groups={"firm"})
      * @Assert\LessThanOrEqual(value="today", message="Fecha fuera de rango", groups={"firm"})
-     * @Assert\GreaterThan(propertyPath="fechaAprobado",
+     * @Assert\GreaterThanOrEqual(propertyPath="fechaAprobado",
      *     message="Fecha fuera de rango",
      *     groups={"firm"}
      * )

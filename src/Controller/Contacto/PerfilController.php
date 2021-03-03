@@ -74,7 +74,7 @@ class PerfilController extends AbstractController
     /**
      * Displays a form to edit an existing perfil entity.
      *
-     * @Route("/{id}/edit",
+     * @Route("/{id<[1-9]\d*>}/edit",
      *      name="app_contacto_perfil_edit",
      *      methods={"GET", "POST"}
      * )
