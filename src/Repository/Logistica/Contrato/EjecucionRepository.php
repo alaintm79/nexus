@@ -35,27 +35,4 @@ class EjecucionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getScalarResult();
     }
-
-    public function findEjecucionByRango(string $inicio, string $fin): array
-    {
-        $qb = $this->createQueryBuilder('e');
-
-        return $qb->select('e.saldoCup, e.saldoCuc,e.fechaModificacion')
-            ->addSelect('s.noDocumentoPrimario, s.noDocumentoSecundario')
-            ->addSelect('s.importeCup, s.importeCuc')
-            ->addSelect('d.tipo')
-            ->addSelect('c.id, c.numero')
-            ->addSelect('u.nombre AS unidad')
-            ->addSelect('pc.nombre AS proveedorCliente')
-            ->leftJoin('e.solicitud', 's')
-            ->leftJoin('s.tipoDocumento', 'd')
-            ->leftJoin('s.contrato', 'c')
-            ->leftJoin('c.proveedorCliente', 'pc')
-            ->leftJoin('c.procedencia', 'u')
-            ->where($qb->expr()->between('e.fechaModificacion', ':inicio', ':fin'))
-            ->setParameter('inicio', $inicio)
-            ->setParameter('fin', $fin)
-            ->getQuery()
-            ->getScalarResult();
-    }
 }

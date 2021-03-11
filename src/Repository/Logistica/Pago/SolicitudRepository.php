@@ -51,29 +51,6 @@ public function findSolicitudByEstado(string $estado): array
             ->getScalarResult();
     }
 
-    public function findSolicitudPagoByRango(string $inicio, string $fin, string $estado = ''): array
-    {
-        $qb = $this->createQueryBuilder('s');
-
-        $qb->select('s.id, s.noDocumentoPrimario, s.fechaDocumento, s.fechaSolicitud')
-            ->addSelect('s.importeCup, s.importeCuc, s.importeTotal')
-            ->addSelect('c.numero AS contratoNumero')
-            ->addSelect('e.estado')
-            ->addSelect('u.nombre AS unidad')
-            ->leftJoin('s.contrato', 'c')
-            ->leftJoin('s.estado', 'e')
-            ->leftJoin('c.procedencia', 'u')
-            ->where($qb->expr()->like('e.estado', ':estado'))
-            ->andWhere($qb->expr()->between('s.fechaSolicitud', ':inicio', ':fin'))
-            ->setParameter('estado', '%'.$estado.'%')
-            ->setParameter('inicio', $inicio)
-            ->setParameter('fin', $fin)
-        ;
-
-        return $qb->getQuery()
-            ->getScalarResult();
-    }
-
     public function findById(int $id): ?Solicitud
     {
         $qb = $this->createQueryBuilder('s')
@@ -96,21 +73,21 @@ public function findSolicitudByEstado(string $estado): array
             ->getSingleResult();
     }
 
-    public function findTotalPagosByUEB(): array
-    {
-        return $this->createQueryBuilder('sp')
-            ->select('u.nombre AS unidad')
-            ->leftJoin('sp.estado', 'e')
-            ->leftJoin('sp.contrato', 'c')
-            ->leftJoin('c.procedencia', 'u')
-            ->where('e.estado = :estado')
-            ->setParameter('estado', 'PAGADO')
-            ->groupBy('u.nombre')
-            ->orderBy('u.nombre')
-            ->getQuery()
-            ->useQueryCache(true)
-            ->getScalarResult();
-    }
+    // public function findTotalPagosByUEB(): array
+    // {
+    //     return $this->createQueryBuilder('sp')
+    //         ->select('u.nombre AS unidad')
+    //         ->leftJoin('sp.estado', 'e')
+    //         ->leftJoin('sp.contrato', 'c')
+    //         ->leftJoin('c.procedencia', 'u')
+    //         ->where('e.estado = :estado')
+    //         ->setParameter('estado', 'PAGADO')
+    //         ->groupBy('u.nombre')
+    //         ->orderBy('u.nombre')
+    //         ->getQuery()
+    //         ->useQueryCache(true)
+    //         ->getScalarResult();
+    // }
 
     public function findTotalPagosByUEBAndRango(string $inicio, string $fin): array
     {
