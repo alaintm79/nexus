@@ -5,7 +5,6 @@ namespace App\Form\Logistica\Pago;
 use App\Entity\Logistica\Contrato\Contrato;
 use App\Entity\Logistica\Pago\Acapite;
 use App\Entity\Logistica\Pago\Documento;
-use App\Entity\Logistica\Pago\Estado;
 use App\Entity\Logistica\Pago\Instrumento;
 use App\Entity\Logistica\Pago\Solicitud;
 use App\Entity\Logistica\Pago\Tipo;
@@ -17,8 +16,6 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
@@ -102,63 +99,6 @@ class SolicitudType extends AbstractType
                 ],
             ])
         ;
-
-        /*
-         * EventListener
-         */
-
-        // $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($options) {
-        //     $solicitud = $event->getData();
-        //     $form = $event->getForm();
-
-        //     // if(null !== $solicitud['documentoPrimario'])
-        //     if(null !== $form->get('documentoPrimario')->getData())
-        //     {
-        //         $form->remove('documentoPrimario');
-        //     }
-        // });
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($options) {
-            $solicitud = $event->getData();
-            $form = $event->getForm();
-
-            // if(null !== $solicitud->getDocumentoPrimario())
-            // {
-            //     $form->remove('documentoPrimario');
-            // }
-
-            // if (! \in_array('PENDIENTE', $options['estado'])) {
-            //     $form->remove('noDocumentoPrimario')
-            //         ->remove('fechaDocumento')
-            //         ->remove('contrato')
-            //         ->remove('objetivo')
-            //         ->remove('acapite')
-            //         ->remove('tipoDocumento')
-            //         ->remove('tipoPago')
-            //         ->remove('instrumentoPago')
-            //         ->remove('importe')
-            //         ->remove('documentoPrimario')
-            //     ;
-            // }
-
-            // if (\in_array('PAGADO', $options['estado']) && $solicitud->getTipoDocumento()->getTipo() !== 'FACTURA') {
-            //     $form->add('noDocumentoSecundario', TextType::class, [
-            //         'label' => 'No. Factura',
-            //         'attr' => [
-            //             'disabled' => 'disabled'
-            //         ]
-            //     ])
-            //     ->add('documentoSecundario', FileType::class, [
-            //         'label'        => 'Documento secundario',
-            //         'multiple'     => false,
-            //         'required'     => false,
-            //         'attr' => [
-            //             'disabled' => 'disabled'
-            //         ],
-            //         'data_class' => null,
-            //     ]);
-            // }
-        });
     }
 
     /**

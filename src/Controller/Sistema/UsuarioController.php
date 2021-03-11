@@ -8,7 +8,6 @@ use App\Form\Sistema\UsuarioPasswordType;
 use App\Form\Sistema\UsuarioType;
 use App\Repository\Sistema\UsuarioRepository;
 use phpseclib\Net\SSH2;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,7 +61,6 @@ class UsuarioController extends AbstractController
      *      defaults={"unidad": null},
      *      methods={"GET", "POST"}
      * )
-     * @Security("is_granted(['ROLE_NX_ADMIN'])")
      */
     public function new(Request $request, UserPasswordEncoderInterface $passwordEncoder): Response
     {
