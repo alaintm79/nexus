@@ -38,8 +38,6 @@ class BackupCreateCommand extends Command
         $process->run();
 
         if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-
             return 1;
         }
 
