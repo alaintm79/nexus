@@ -375,10 +375,10 @@ class Usuario implements UserInterface
      */
     public function isCiValid()
     {
-        $ci = $this->ci;
-        $anno = $ci[6] <= 5 ? '19'.substr($ci, 0, 2) : '20'.substr($ci, 0, 2);
-        $mes = substr($ci, 2, 2);
-        $dia = substr($ci, 4, 2);
+        $val = $this->ci;
+        $anno = $val[6] <= 5 ? '19'.substr($val, 0, 2) : '20'.substr($val, 0, 2);
+        $mes = substr($val, 2, 2);
+        $dia = substr($val, 4, 2);
 
         if($anno < 1940){
             return false;
