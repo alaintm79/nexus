@@ -38,9 +38,6 @@ class FirmaController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $estado = $em->getRepository(Estado::class)->findOneBy(['estado' => 'FIRMADO']);
 
-            // dump(!in_array($suplemento->getVigencia(), ['CUMPLIMIENTO OBLIGACIONES', 'CUMPLIMIENTO FECHA', 'PERMANENTE']));
-            // dump($suplemento->getVigencia()); exit();
-
             if(!is_null($suplemento->getValorCup())){
                 $contrato->setValorEjecucionCup($contrato->getValorEjecucionCup() + $suplemento->getValorCup());
                 $contrato->setValorTotalCup($contrato->getValorTotalCup() + $suplemento->getValorCup());

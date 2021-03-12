@@ -137,36 +137,4 @@ class SuplementoController extends AbstractController
             'contrato' => $contrato->findById($suplemento->getContrato()->getId()),
         ]);
     }
-
-    // private function setValoresEjecucion($contrato, $cup, $cuc): void
-    // {
-    //     if(!is_null($cup)){
-    //         $contrato->setValorEjecucionCup($contrato->getValorEjecucionCup() + $cup);
-    //         $contrato->setValorTotalCup($contrato->getValorTotalCup() + $cup);
-    //     }
-
-    //     if(!is_null($cuc)){
-    //         $contrato->setValorEjecucionCuc($contrato->getValorEjecucionCuc() + $cuc);
-    //         $contrato->setValorTotalCuc($contrato->getValorTotalCuc() + $cuc);
-    //     }
-    // }
-
-    // private function setVigencia($contrato, $suplemento, $firma, $vigencia, $fechaVigencia): void
-    // {
-    //     if(!is_null($vigencia)
-    //         && $vigencia->getVigencia() !== 'CUMPLIMIENTO OBLIGACIONES'
-    //         && $vigencia->getVigencia() !== 'CUMPLIMIENTO FECHA'
-    //         && $vigencia->getVigencia() !== 'PERMANENTE'
-    //     ){
-    //         $vigenciaNew = $vigencia->getVigencia();
-    //         $fechaVigencia = new \DateTime($firma);
-
-    //         $suplemento->setFechaVigencia($fechaVigencia->modify(Vigencia::calcular($vigenciaNew)));
-    //         $contrato->setFechaVigencia($suplemento->getFechaVigencia());
-    //     }
-
-    //     if(!is_null($fechaVigencia)){
-    //         $contrato->setFechaVigencia($suplemento->getFechaVigencia());
-    //     }
-    // }
 }
