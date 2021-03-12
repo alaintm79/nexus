@@ -73,22 +73,6 @@ public function findSolicitudByEstado(string $estado): array
             ->getSingleResult();
     }
 
-    // public function findTotalPagosByUEB(): array
-    // {
-    //     return $this->createQueryBuilder('sp')
-    //         ->select('u.nombre AS unidad')
-    //         ->leftJoin('sp.estado', 'e')
-    //         ->leftJoin('sp.contrato', 'c')
-    //         ->leftJoin('c.procedencia', 'u')
-    //         ->where('e.estado = :estado')
-    //         ->setParameter('estado', 'PAGADO')
-    //         ->groupBy('u.nombre')
-    //         ->orderBy('u.nombre')
-    //         ->getQuery()
-    //         ->useQueryCache(true)
-    //         ->getScalarResult();
-    // }
-
     public function findTotalPagosByUEBAndRango(string $inicio, string $fin): array
     {
         $qb = $this->createQueryBuilder('sp');
