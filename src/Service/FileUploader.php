@@ -16,37 +16,29 @@ class FileUploader
         $this->path = __DIR__.'/../../public';
     }
 
-    public function upload(UploadedFile $file, string $dir = '/uploads', bool $storeByDate = false, string $name)
+    public function upload(UploadedFile $file, string $dir = '/uploads', string $name = 'default', bool $storeByDate = false)
     {
         if($storeByDate){
             $date = new \DateTime('now');
             $dir = $dir.'/'.$date->format('Y/m');
         }
 
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+        $originalFilename = $name === 'default' ? pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) : $name;
+        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_-] remove; Lower()', $originalFilename);
+        $fileName = $safeFilename.'.'.$file->guessExtension();
+
+        if('default' === $name){
+            $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+        }
 
         try {
-            $file->move($this->getTargetDirectory(), $fileName);
+            $file->move($this->path.$dir, $fileName);
         } catch (FileException $e) {
             // ... handle exception if something happens during file upload
         }
 
-
-        // if('uniqid' === $name){
-        //     $file = uniqid($prefix) . '.' . $uploadedFile->guessExtension();
-        //     $uploadedFile->move($this->path.$dir, $file);
-        // } elseif('original' === $name) {
-        //     $file = $uploadedFile->getClientOriginalName();
-        //     $uploadedFile->move($this->getPath().$dir, $uploadedFile->getClientOriginalName());
-        // } elseif($name){
-        //     $file = $name . '.' . $uploadedFile->guessExtension();
-        //     $uploadedFile->move($this->path.$dir, $file);
-        // }
-
         if($storeByDate){
-            return $dir.'/'.$file;
+            return $dir.'/'.$fileName;
         }
 
         return $fileName;
