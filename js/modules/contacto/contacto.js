@@ -20,7 +20,7 @@ function operateFormatterByAdmin(value, row, index) {
         '</button>',
         '<button class="btn btn-secondary btn-modal-edit" title="Editar" data-toggle="tooltip" data-placement="top" title="Editar">',
         '<i class="fas fa-pencil-alt fa-sm"></i>',
-        '</button>',,
+        '</button>',
         '<button class="btn btn-secondary btn-modal-delete" title="Editar" data-toggle="tooltip" data-placement="top" title="Editar">',
         '<i class="fas fa-trash-alt fa-sm"></i>',
         '</button>',
