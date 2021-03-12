@@ -312,7 +312,7 @@ class Contacto
         }
 
         $val = $this->ci;
-        $anno = $ci[6] <= 5 ? '19'.substr($val, 0, 2) : '20'.substr($val, 0, 2);
+        $anno = $val[6] <= 5 ? '19'.substr($val, 0, 2) : '20'.substr($val, 0, 2);
         $mes = substr($val, 2, 2);
         $dia = substr($val, 4, 2);
 
