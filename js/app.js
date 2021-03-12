@@ -180,7 +180,6 @@ function operateFormatterEdit(value, row, index) {
 
 function dateFormatter(value, row, index) {
     if(value !== null){
-        // return moment(value.date).format('DD-MM-YYYY');
         return moment(value.date).format('YYYY-MM-DD');
     } else {
         return '';
