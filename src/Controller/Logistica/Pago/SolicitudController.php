@@ -76,6 +76,7 @@ class SolicitudController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
+    // $notify->send($this->getParameter('app_notify_finanzas'), $solicitud, 'logistica/pago/notificacion.html.twig', 'Nueva solicitud de pago generada');
     public function create(Request $request/* , Notify $notify */): Response
     {
         $solicitud = new Solicitud();
@@ -104,7 +105,6 @@ class SolicitudController extends AbstractController
             $em->persist($solicitud);
             $em->flush();
 
-            // $notify->send($this->getParameter('app_notify_finanzas'), $solicitud, 'logistica/pago/notificacion.html.twig', 'Nueva solicitud de pago generada');
 
             return $this->render('common/notify.html.twig', []);
         }

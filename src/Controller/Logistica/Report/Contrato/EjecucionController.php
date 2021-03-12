@@ -2,9 +2,9 @@
 
 namespace App\Controller\Logistica\Report\Contrato;
 
+use App\Controller\Logistica\Report\Traits\FormRangeTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class EjecucionController extends AbstractController
 {
+    use FormRangeTrait;
+
     protected $em;
 
     public function __construct (EntityManagerInterface $em)
@@ -44,22 +46,6 @@ class EjecucionController extends AbstractController
             'ejecuciones' => isset($query) ? $query : [],
             'form' => $form->createView()
         ]);
-    }
-
-    /*
-    *   Report Form
-    */
-
-    private function form(): ?object
-    {
-        return $this->createFormBuilder([])
-            ->add('start', TextType::class, [
-                'label' => 'Fecha Inicial',
-            ])
-            ->add('end', TextType::class, [
-                'label' => 'Fecha Final',
-            ])
-            ->getForm();
     }
 
     /*

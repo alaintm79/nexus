@@ -2,6 +2,7 @@
 
 namespace App\Controller\Logistica\Report\Pago;
 
+use App\Controller\Logistica\Report\Traits\FormRangeTrait;
 use App\Repository\Logistica\Pago\SolicitudRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -16,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PagoController extends AbstractController
 {
-
+    use FormRangeTrait;
     /**
      * @Route("/contratos/total-pagos/",
      *      name="reporte_pago_total",
@@ -25,15 +26,7 @@ class PagoController extends AbstractController
      */
     public function total(Request $request, SolicitudRepository $solicitudes): Response
     {
-        $form = $this->createFormBuilder([])
-            ->add('start', TextType::class, [
-                'label' => 'Fecha Inicial',
-            ])
-            ->add('end', TextType::class, [
-                'label' => 'Fecha Final',
-            ])
-            ->getForm()
-        ;
+        $form = $this->form();
 
         $form->handleRequest($request);
 

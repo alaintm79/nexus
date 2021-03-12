@@ -26,7 +26,7 @@ class AprobadoController extends AbstractController
      *      methods={"GET"}
      * )
      */
-    public function index(int $start = 0, $end): Response
+    public function index(int $start, $end): Response
     {
         return $this->render('logistica/report/contrato/aprobado.html.twig', [
             'contratos' => $this->query($start, $end),
@@ -38,7 +38,7 @@ class AprobadoController extends AbstractController
     /*
     *   Report Query
     */
-    private function query(int $start = 0, $end): ?array
+    private function query(int $start, $end): ?array
     {
         $range = "DATE_DIFF(CURRENT_DATE(), c.fechaAprobado ) >= :start AND DATE_DIFF(CURRENT_DATE(), c.fechaAprobado ) <= :end AND e.estado = 'APROBADO'";
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Logistica\Report\Pago;
 
+use App\Controller\Logistica\Report\Traits\FormRangeTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TotalController extends AbstractController
 {
+    use FormRangeTrait;
+    
     protected $em;
 
     public function __construct (EntityManagerInterface $em)
@@ -42,22 +45,6 @@ class TotalController extends AbstractController
             'pagos' => isset($query) ? $query : [],
             'form' => $form->createView(),
         ]);
-    }
-
-    /*
-    *   Report Form
-    */
-
-    private function form(): ?object
-    {
-        return $this->createFormBuilder([])
-            ->add('start', TextType::class, [
-                'label' => 'Fecha Inicial',
-            ])
-            ->add('end', TextType::class, [
-                'label' => 'Fecha Final',
-            ])
-            ->getForm();
     }
 
     /*
