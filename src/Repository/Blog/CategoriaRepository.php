@@ -2,6 +2,7 @@
 
 namespace App\Repository\Blog;
 
+use App\Entity\Blog\Categoria;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
@@ -15,6 +16,14 @@ class CategoriaRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Post::class);
+        parent::__construct($registry, Categoria::class);
+    }
+
+    public function findAll(): ?array
+    {
+        return $this->createQueryBuilder('c')
+            ->select("c.id, c.categoria")
+            ->getQuery()
+            ->getScalarResult();
     }
 }

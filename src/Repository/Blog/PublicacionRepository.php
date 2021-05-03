@@ -20,13 +20,13 @@ class PublicacionRepository extends ServiceEntityRepository
         parent::__construct($registry, Publicacion::class);
     }
 
-    public function findTotales(): ?array
+    public function findTotalesByEstado(): ?array
     {
 
         $totales = $this->createQueryBuilder('p')
-            ->select("SUM(( CASE WHEN( e.estado = 'publicado' )  THEN 1 ELSE 0 END )) AS publicados")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'borrador' )  THEN 1 ELSE 0 END )) AS borradores")
-            ->addSelect("SUM(( CASE WHEN( e.estado = 'eliminado' )  THEN 1 ELSE 0 END )) AS eliminados")
+            ->select("SUM(( CASE WHEN( e.estado = 'Publicado' )  THEN 1 ELSE 0 END )) AS publicados")
+            ->addSelect("SUM(( CASE WHEN( e.estado = 'Borrador' )  THEN 1 ELSE 0 END )) AS borradores")
+            ->addSelect("SUM(( CASE WHEN( e.estado = 'Eliminado' )  THEN 1 ELSE 0 END )) AS eliminados")
             ->leftJoin('p.estado', 'e')
             ->getQuery()
             ->useQueryCache(true)
@@ -38,16 +38,17 @@ class PublicacionRepository extends ServiceEntityRepository
     public function findPublicacionesByEstado(string $estado): ?array
     {
         return $this->createQueryBuilder('p')
-            ->select('p.titulo, a.usuario AS autor, c.categoria, e.estado, p.fechaPublicacion')
+            ->select('p.id, p.titulo, a.username AS autor, c.categoria, e.estado, p.fechaPublicacion, p.isSticky')
             ->leftJoin('p.estado', 'e')
             ->leftJoin('p.categoria', 'c')
             ->leftJoin('p.autor', 'a')
             ->where('e.estado = :estado')
             ->setParameter('estado', $estado)
-            ->orderBy('p.fechaPublicacion', 'DESC')
+            ->orderBy('p.isSticky', 'DESC')
+            ->addOrderBy('p.fechaPublicacion', 'DESC')
             ->addOrderBy('p.id', 'DESC')
             ->getQuery()
-            ->getArrayResult();
+            ->getScalarResult();
     }
 
 

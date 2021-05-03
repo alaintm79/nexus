@@ -19,20 +19,11 @@ class EnlaceRepository extends ServiceEntityRepository
         parent::__construct($registry, Enlace::class);
     }
 
-    public function findEnlaces(): ?array
+    public function findAll(): ?array
     {
         return $this->createQueryBuilder('e')
             ->orderBy('e.id', 'asc')
             ->getQuery()
             ->getArrayResult();
-    }
-
-    public function findEnlaceById(int $id): ?Enlace
-    {
-        return $this->createQueryBuilder('e')
-            ->where('e.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getSingleResult();
     }
 }

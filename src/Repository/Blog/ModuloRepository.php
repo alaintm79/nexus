@@ -19,21 +19,12 @@ class ModuloRepository extends ServiceEntityRepository
         parent::__construct($registry, Modulo::class);
     }
 
-    public function findModulos(): ?array
+    public function findAll(): ?array
     {
         return $this->createQueryBuilder('m')
             ->select("m.id, m.nombre AS modulo, m.isActive")
             ->orderBy('m.id', 'asc')
             ->getQuery()
             ->getArrayResult();
-    }
-
-    public function findModuloById(int $id): ?Modulo
-    {
-        return $this->createQueryBuilder('m')
-            ->where('m.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getSingleResult();
     }
 }

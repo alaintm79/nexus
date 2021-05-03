@@ -14,26 +14,54 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class OpcionRepository extends ServiceEntityRepository
 {
+    private const EXCLUDE = ['URL_SPLASH', 'URL_LOGO'];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Opcion::class);
     }
 
-    public function findOpciones(): ?array
+    public function findAll(): ?array
     {
-        return $this->createQueryBuilder('o')
-            ->select("o.id, o.nombre, o.valor, o.isActive")
+        $qb = $this->createQueryBuilder('o');
+
+        return $qb->select("o.id, o.token, o.nombre, o.valor, o.isActive")
             ->orderBy('o.id', 'asc')
             ->getQuery()
             ->getArrayResult();
     }
 
-    public function findOpcionById(int $id): ?Opcion
+    public function findAllButNotExcluded(): ?array
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        return $qb->select("o.id, o.token, o.nombre, o.valor, o.isActive")
+            ->where($qb->expr()->notIn('o.token', self::EXCLUDE))
+            ->orderBy('o.id', 'asc')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
+    public function findAllWithExcluded(): ?array
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        $qb->select("o.id, o.token, o.nombre, o.valor, o.isActive")
+            ->where($qb->expr()->in('o.token', self::EXCLUDE))
+            ->orderBy('o.id', 'asc');
+
+        $opciones = $qb->getQuery()
+                        ->getScalarResult();
+
+        return $opciones;
+    }
+
+    public function findByToken($token): ?Opcion
     {
         return $this->createQueryBuilder('o')
-            ->where('o.id = :id')
-            ->setParameter('id', $id)
+            ->where('o.token = :token')
+            ->setParameter('token', $token)
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 }
