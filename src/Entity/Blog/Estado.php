@@ -3,6 +3,7 @@
 namespace App\Entity\Blog;
 
 use App\Entity\Traits\IdTrait;
+use App\Repository\Blog\EstadoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +38,14 @@ class Estado
         $this->estado = $estado;
 
         return $this;
+    }
+
+    /*
+     *  __toString
+     */
+    public function __toString ()
+    {
+        return \ucfirst($this->estado);
     }
 }
 

@@ -4,6 +4,7 @@ namespace App\Entity\Blog;
 
 use App\Entity\Traits\IdTrait;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\Blog\CategoriaRepository;
 
 /**
  * PublicacionCategoria
@@ -32,6 +33,14 @@ class Categoria
         $this->categoria = $categoria;
 
         return $this;
+    }
+
+    /*
+     *  __toString
+     */
+    public function __toString ()
+    {
+        return \ucfirst($this->categoria);
     }
 }
 

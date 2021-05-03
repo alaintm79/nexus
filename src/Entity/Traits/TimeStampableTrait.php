@@ -28,23 +28,23 @@ trait TimeStampableTrait {
         return $this->fechaCreado;
     }
 
-    public function setFechaCreado(\DateTimeInterface $fechaCreado): self
-    {
-        $this->fechaCreado = $fechaCreado;
+    // public function setFechaCreado(\DateTimeInterface $fechaCreado): self
+    // {
+    //     $this->fechaCreado = $fechaCreado;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getFechaModificacion(): ?\DateTimeInterface
     {
         return $this->fechaModificacion;
     }
 
-    public function setFechaModificacion(?\DateTimeInterface $fechaModificacion): self
-    {
-        $this->fechaModificacion = $fechaModificacion;
+    // public function setFechaModificacion(?\DateTimeInterface $fechaModificacion): self
+    // {
+    //     $this->fechaModificacion = $fechaModificacion;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
 }

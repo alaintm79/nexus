@@ -5,6 +5,7 @@ namespace App\Entity\Blog;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\IsActiveTrait;
 use App\Entity\Traits\TimeStampableTrait;
+use App\Repository\Blog\OpcionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +20,13 @@ class Opcion
 
     /**
      * @var string
+     * 
+     * @ORM\Column(name="token", type="string", length=255, unique=true)
+     */
+    private $token;
+
+    /**
+     * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=255, unique=true)
      */
@@ -27,9 +35,22 @@ class Opcion
     /**
      * @var string
      *
-     * @ORM\Column(name="valor", type="text", nullable=true))
+     * @ORM\Column(name="valor", type="text", nullable=true)
      */
     private $valor;
+
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
 
     public function getNombre(): ?string
     {
@@ -48,11 +69,10 @@ class Opcion
         return $this->valor;
     }
 
-    public function setValor(string $valor): self
+    public function setValor(?string $valor): self
     {
         $this->valor = $valor;
 
         return $this;
     }
 }
-

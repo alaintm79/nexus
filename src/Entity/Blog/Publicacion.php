@@ -7,16 +7,16 @@ use App\Entity\Blog\Estado;
 use App\Entity\Sistema\Usuario;
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TimeStampableTrait;
+use App\Repository\Blog\PublicacionRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Post
  *
  * @ORM\Table(name="nexus.blog_publicacion")
  * @ORM\Entity(repositoryClass=PublicacionRepository::class)
- * @UniqueEntity(fields={"slug"}, message="Enlace en uso en otra publicación!.")
  */
 class Publicacion
 {
@@ -46,17 +46,10 @@ class Publicacion
     /**
      * @var string
      *
-     * @ORM\Column(name="contenido", type="text")
+     * @ORM\Column(name="contenido", type="text", nullable=true)
      * @Assert\NotBlank()
      */
     private $contenido;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="miniatura", type="string", length=255, nullable=true)
-     */
-    private $miniatura;
 
     /**
      * @ORM\ManyToOne(targetEntity=Estado::class)
@@ -66,15 +59,9 @@ class Publicacion
     /**
      * @var string
      *
-     * @ORM\Column(name="adjunto", type="string", nullable=true)
-     */
-    private $adjunto;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
-     * @Assert\NotBlank()
+     * @Gedmo\Translatable
+     * @Gedmo\Slug(fields={"titulo"})
      */
     private $slug;
 
@@ -86,12 +73,18 @@ class Publicacion
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="fecha_publicacion", type="datetime")
+     * @ORM\Column(name="fecha_publicacion", type="date")
      */
     private $fechaPublicacion;
 
-    public function __construct(){
-        $this->fechaPublicacion = new \DateTime();
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $isSticky;
+
+    public function  __construct()
+    {
+        $this->fechaPublicacion = new \DateTime('now');
     }
 
     public function getTitulo(): ?string
@@ -142,19 +135,6 @@ class Publicacion
         return $this;
     }
 
-    public function getMiniatura(): ?string
-    {
-        return $this->miniatura;
-    }
-
-    public function setMiniatura(string $miniatura): ?self
-    {
-        $this->miniatura = $miniatura;
-
-        return $this;
-    }
-
-
     public function getEstado(): ?Estado
     {
         return $this->estado;
@@ -167,28 +147,9 @@ class Publicacion
         return $this;
     }
 
-    public function getAdjunto(): ?string
-    {
-        return $this->adjunto;
-    }
-
-    public function setAdjunto(string $adjunto): self
-    {
-        $this->adjunto = $adjunto;
-
-        return $this;
-    }
-
     public function getSlug(): string
     {
         return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
     }
 
     public function getAutor(): Usuario
@@ -203,14 +164,26 @@ class Publicacion
         return $this;
     }
 
-    public function getFechaPublicacion(): \DateTimeInterface
+    public function getFechaPublicacion(): ?\DateTimeInterface
     {
         return $this->fechaPublicacion;
     }
 
-    public function setFechaPublicacion(\DateTimeInterface $fechaPublicacion): self
+    public function setFechaPublicacion(?\DateTimeInterface $fechaPublicacion): self
     {
         $this->fechaPublicacion = $fechaPublicacion;
+
+        return $this;
+    }
+
+    public function getIsSticky(): ?bool
+    {
+        return $this->isSticky;
+    }
+
+    public function setIsSticky(?bool $isSticky): self
+    {
+        $this->isSticky = $isSticky;
 
         return $this;
     }
