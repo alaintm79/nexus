@@ -31,18 +31,18 @@ class LogRegister{
      */
     public function register($action): void
     {
-
-        $log = new ActionLog();
         $info = $this->request->getCurrentRequest();
 
         if(null !== $info){
+            $log = new ActionLog();
+
             $log->setUsername($this->security->getToken()->getUsername());
             $log->setAction($action);
             $log->setIp($info->getClientIp());
             $log->setUrl($info->getPathInfo());
-        }
 
-        $this->em->persist($log);
-        $this->em->flush();
+            $this->em->persist($log);
+            $this->em->flush();
+        }
     }
 }

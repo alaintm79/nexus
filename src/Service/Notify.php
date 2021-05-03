@@ -2,57 +2,36 @@
 
 namespace App\Service;
 
+use Twig\Environment;
+
 class Notify{
 
     private $mailer;
-    private $template;
+    private const FROM = 'sysadmin@etep.une.cu';
 
-    public function __construct (\Swift_Mailer $mailer, \Twig_Environment $template)
+    public function __construct (\Swift_Mailer $mailer, Environment $twig)
     {
         $this->mailer = $mailer;
-        $this->template = $template;
-        $this->path = __DIR__.'/../../../web/img';
+        $this->twig = $twig;
     }
 
     /**
      * @inheritdoc
      */
 
-    public function send($usuario, $body, $template, $subject = 'Notificación')
+    public function send($usuario, $text, $template, $subject = 'Notificación')
     {
-        $message = new \Swift_Message();
-
-        $message->setFrom('sysadmin@etep.une.cu')
+        $message = (new \Swift_Message())
+            ->setFrom(self::FROM)
             ->setTo($usuario)
             ->setSubject($subject)
-            ->setBody($this->template->render($template, ['body' => $body]), 'text/html');
-
-        $msgId = $message->getHeaders()->get('Message-ID');
-        $msgId->setId(time() . '.' . uniqid('thing') . '@etep.une.cu');
+            ->setBody(
+                $this->twig->render(
+                    $template, ['text' => $text]
+                ),
+                'text/html'
+            );
 
         $this->mailer->send($message);
     }
-
-    /**
-     * @inheritdoc
-     */
-
-    public function sendList($usuarios, $body, $template, $subject = 'Notificación')
-    {
-        foreach ($usuarios as $usuario)
-        {
-            $message = new \Swift_Message();
-
-            $message->setFrom('sysadmin@etep.une.cu')
-                ->setTo($usuario['correo'])
-                ->setSubject($subject)
-                ->setBody($this->template->render($template, ['body' => $body]), 'text/html');
-
-            $msgId = $message->getHeaders()->get('Message-ID');
-            $msgId->setId(time() . '.' . uniqid('thing') . '@etep.une.cu');
-
-            $this->mailer->send($message);
-        }
-    }
-
 }
