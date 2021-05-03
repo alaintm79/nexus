@@ -5,12 +5,15 @@ namespace App\Command\Sistema;
 use Symfony\Component\Process\Process;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class BackupCreateCommand extends Command
 {
+    use LockableTrait;
+
     protected static $defaultName = 'app:backup:create';
 
     public function __construct(EntityManagerInterface $em)
@@ -27,6 +30,12 @@ class BackupCreateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$this->lock()) {
+            $output->writeln('El comando esta siendo ejecutado en otro proceso.');
+
+            return 0;
+        }
+
         $output->writeln([
             'Creando backup del sistema...',
             '',
