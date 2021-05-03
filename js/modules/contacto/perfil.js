@@ -1,10 +1,10 @@
 window.operateEvents = {
     'click .btn-modal-edit': function (e, value, row, index) {
-        modalShow('Modificar Contacto', '/contactos/perfil/' + row.id + '/edit', 'modal-lg')
+        modalShow('Modificar Perfil Profesional', '/contactos/perfil/' + row.id + '/edit', 'modal-lg')
     }
 }
 
-let $table = $('#table');
+const $table = $('#table');
 
 $table.bootstrapTable({
     loadingFontSize: '16px'

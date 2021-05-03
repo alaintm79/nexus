@@ -1,11 +1,11 @@
 // Acciones
 window.operateEvents = {
     'click .btn-modal-edit': function (e, value, row, index) {
-        modalShow('Modificar Ubicación', '/contactos/ubicacion/' + row.id + '/edit', 'modal-lg')
+        modalShow('Modificar Categoria', '/blog/admin/categorias/' + row.id + '/edit', 'modal-lg')
     }
-}
+};
 
-const $table = $('#table');
+let $table = $('#table');
 
 $table.bootstrapTable({
     loadingFontSize: '16px'
