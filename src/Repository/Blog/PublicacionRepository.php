@@ -5,7 +5,7 @@ namespace App\Repository\Blog;
 use App\Entity\Blog\Publicacion;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Publicacion|null find($id, $lockMode = null, $lockVersion = null)
@@ -35,10 +35,28 @@ class PublicacionRepository extends ServiceEntityRepository
         return $totales[0];
     }
 
+    public function findAllPublicacionesWithQueryBuilder(string $estado): ?QueryBuilder
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.id, p.titulo, p.fechaPublicacion, p.resumen, p.contenido, p.slug, p.thumbnail, p.isSticky')
+            ->addSelect('c.categoria, e.estado')
+            ->addSelect("CONCAT(a.nombre, ' ', a.apellidos) AS autor")
+            ->leftJoin('p.estado', 'e')
+            ->leftJoin('p.categoria', 'c')
+            ->leftJoin('p.autor', 'a')
+            ->where('e.estado = :estado')
+            ->setParameter('estado', $estado)
+            ->orderBy('p.isSticky', 'DESC')
+            ->addOrderBy('p.fechaPublicacion', 'DESC')
+            ->addOrderBy('p.id', 'DESC');
+    }
+
     public function findPublicacionesByEstado(string $estado): ?array
     {
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.titulo, a.username AS autor, c.categoria, e.estado, p.fechaPublicacion, p.isSticky')
+            ->select('p.id, p.titulo, p.fechaPublicacion, p.isSticky, p.slug, p.thumbnail, p.isSticky')
+            ->addSelect('c.categoria, e.estado')
+            ->addSelect("CONCAT(a.nombre, ' ', a.apellidos) AS autor")
             ->leftJoin('p.estado', 'e')
             ->leftJoin('p.categoria', 'c')
             ->leftJoin('p.autor', 'a')
@@ -51,16 +69,46 @@ class PublicacionRepository extends ServiceEntityRepository
             ->getScalarResult();
     }
 
-
-    public function findLatest(): ?Publicacion
+    public function findPublicacionByIdAndSlug(int $id, string $slug, string $estado = 'Publicado'): ?array
     {
         return $this->createQueryBuilder('p')
-                ->where('p.estado = :estado')
-                ->setMaxResults(4)
-                ->setParameter('estado', 'publicado')
-                ->orderBy('p.fechaPublicacion', 'DESC')
-                ->addOrderBy('p.id', 'DESC')
-                ->getQuery()
-                ->getResult();
+            ->select('p.id, p.titulo, p.fechaPublicacion, p.contenido, p.thumbnail, p.isSticky')
+            ->addSelect('c.categoria, e.estado')
+            ->addSelect("CONCAT(a.nombre, ' ', a.apellidos) AS autor")
+            ->leftJoin('p.estado', 'e')
+            ->leftJoin('p.categoria', 'c')
+            ->leftJoin('p.autor', 'a')
+            ->where('p.id = :id')
+            ->andWhere('p.slug = :slug')
+            ->andWhere('e.estado = :estado')
+            ->setParameter('id', $id)
+            ->setParameter('slug', $slug)
+            ->setParameter('estado', $estado)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findLatestOrRecommended(int $total, bool $stickyOnly = false): ?array
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        $qb->select('p.id, p.titulo, p.resumen, p.slug, e.estado, p.fechaPublicacion, p.isSticky, p.thumbnail')
+            ->addSelect('c.categoria, e.estado')
+            ->addSelect("CONCAT(a.nombre, ' ', a.apellidos) AS autor")
+            ->leftJoin('p.estado', 'e')
+            ->leftJoin('p.autor', 'a')
+            ->leftJoin('p.categoria', 'c')
+            ->where('e.estado = :estado')
+            ->setParameter('estado', 'Publicado')
+            ->setMaxResults($total)
+            ->orderBy('p.fechaPublicacion', 'DESC')
+            ->addOrderBy('p.id', 'DESC');
+
+        if($stickyOnly){
+            $qb->andWhere('p.isSticky = true');
+        }
+
+        return $qb->getQuery()
+            ->getScalarResult();
     }
 }

@@ -26,4 +26,14 @@ class EnlaceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+
+    public function findByIsMenu(): ?array
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.isActive = true')
+            ->andWhere('e.isMenu = true')
+            ->orderBy('e.tipo', 'asc')
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

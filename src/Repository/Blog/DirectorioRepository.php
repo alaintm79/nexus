@@ -30,12 +30,13 @@ class DirectorioRepository extends ServiceEntityRepository
             ->getScalarResult();
     }
 
-    // public function findDirectorioById(int $id): ?Directorio
-    // {
-    //     return $this->createQueryBuilder('a')
-    //         ->where('a.id = :id')
-    //         ->setParameter('id', $id)
-    //         ->getQuery()
-    //         ->getSingleResult();
-    // }
+    public function findByRuta(string $ruta): ?array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('a.id, a.nombre, a.ruta')
+            ->where('a.ruta = :ruta')
+            ->setParameter('ruta', $ruta)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
