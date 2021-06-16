@@ -5,7 +5,7 @@ namespace App\Controller\Blog\Admin;
 use App\Entity\Blog\Opcion;
 use App\Form\Blog\OpcionType;
 use App\Repository\Blog\OpcionRepository;
-use App\Service\OptionCache;
+use App\Service\Cache;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +19,15 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class OpcionController extends AbstractController
 {
+    private const CACHE_ID = 'app_option_cache';
+
     /**
      * @Route("/", name="app_blog_admin_opcion_index")
      */
-    public function index(OpcionRepository $opciones, OptionCache $optionCache): Response
+    public function index(OpcionRepository $opciones, Cache $cache): Response
     {
         return $this->render('blog/admin/opcion.html.twig', [
-            'opciones' => $optionCache->convertToArray($opciones->findAllWithExcluded()),
+            'opciones' => $this->convertToArray($opciones->findAllWithExcluded()),
         ]);
     }
 
@@ -48,7 +50,7 @@ class OpcionController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function edit(Request $request, OptionCache $optionCache, Opcion $opcion): Response
+    public function edit(Request $request, Cache $cache, Opcion $opcion): Response
     {
         $form = $this->createForm(OpcionType::class, $opcion);
         $form->handleRequest($request);
@@ -57,7 +59,7 @@ class OpcionController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-            $optionCache->delete();
+            $cache->delete(self::CACHE_ID);
 
             $this->addFlash('notice', 'Opción modificada con exito!');
 
@@ -78,7 +80,7 @@ class OpcionController extends AbstractController
      *      methods={"POST"}
      * )
      */
-    public function editInLine(Request $request, OptionCache $optionCache, Opcion $opcion, $token): Response
+    public function editInLine(Request $request, Cache $cache, Opcion $opcion, $token): Response
     {
         if (!$this->isCsrfTokenValid($token, $request->request->get('token'))) {
             $this->addFlash('error', 'Imposible modificar la opción');
@@ -91,11 +93,55 @@ class OpcionController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-            $optionCache->delete();
+            $cache->delete(self::CACHE_ID);
 
             $this->addFlash('notice', 'Opción modificada con exito!');
         }
 
         return $this->redirectToRoute('app_blog_admin_opcion_index');
+    }
+
+    /**
+     *  @inheritdoc
+     */
+    public function getOpciones(OpcionRepository $opciones, Cache $cache){
+        if(null === $cache->get(self::CACHE_ID)){
+            $cache->set(self::CACHE_ID, $this->convertToArray($opciones->findAll()));
+        }
+
+        return new JsonResponse($cache->get(self::CACHE_ID));
+    }
+
+    /**
+     *  @inheritdoc
+     */
+    private function convertToArray(array $opciones): ?array
+    {
+        $list = [];
+
+        foreach($opciones as $item){
+            $name = '';
+
+            foreach($item as $key => $value){
+                if($key === 'token'){
+                    $list[$value]['token'] = $value;
+                    $name = $value;
+                }
+
+                if($key === 'nombre'){
+                    $list[$name]['nombre'] = $value;
+                }
+
+                if($key === 'isActive'){
+                    $list[$name]['is_active'] = $value;
+                }
+
+                if($key === 'valor'){
+                    $list[$name]['valor'] = $value;
+                }
+            }
+        }
+
+        return $list;
     }
 }

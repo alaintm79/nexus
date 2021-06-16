@@ -6,9 +6,8 @@ use App\Entity\Blog\Estado;
 use App\Entity\Blog\Publicacion;
 use App\Form\Blog\PublicacionType;
 use App\Repository\Blog\PublicacionRepository;
-use App\Repository\Sistema\UsuarioRepository;
+use App\Service\Cache;
 use App\Service\Notify;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class PublicacionController extends AbstractController
 {
     private const EMAIL_TEMPLATE = 'blog/admin/notify.html.twig';
+    private const CACHE_LATEST_ID = 'app_post_latest_cache';
+    private const CACHE_RECOMMENDED_ID = 'app_post_recommended_cache';
 
     /**
      * @Route("/estado/{estado}",
@@ -63,7 +64,7 @@ class PublicacionController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function new(Request $request, Notify $notify )
+    public function new(Request $request, Notify $notify, Cache $cache)
     {
         $publicacion = new Publicacion();
         $form = $this->createForm(PublicacionType::class, $publicacion);
@@ -77,6 +78,8 @@ class PublicacionController extends AbstractController
 
             $em->persist($publicacion);
             $em->flush();
+
+            $cache->deleteMultiple([self::CACHE_LATEST_ID, self::CACHE_RECOMMENDED_ID]);
 
             $this->addFlash('notice', 'Publicación registrada con exito!');
 
@@ -101,7 +104,7 @@ class PublicacionController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function edit(Request $request, Publicacion $publicacion, Notify $notify)
+    public function edit(Request $request, Publicacion $publicacion, Notify $notify, Cache $cache)
      {
         $options = ['estado' => $publicacion->getEstado()];
         $form = $this->createForm(PublicacionType::class, $publicacion, $options);
@@ -114,6 +117,8 @@ class PublicacionController extends AbstractController
 
             $em->persist($publicacion);
             $em->flush();
+
+            $cache->deleteMultiple([self::CACHE_LATEST_ID, self::CACHE_RECOMMENDED_ID]);
 
             $this->addFlash('notice', 'Publicación modificada con exito!');
 
@@ -144,7 +149,7 @@ class PublicacionController extends AbstractController
      *      methods={"GET"}
      * )
      */
-    public function trash(Request $request, Publicacion $publicacion): Response
+    public function trash(Request $request, Publicacion $publicacion, Cache $cache): Response
     {
         $em = $this->getDoctrine()->getManager();
         $estado = $em->getRepository(Estado::class)->findOneBy(['estado' => 'Eliminado']);
@@ -152,6 +157,8 @@ class PublicacionController extends AbstractController
 
         $publicacion->setEstado($estado);
         $em->flush();
+
+        $cache->deleteMultiple([self::CACHE_LATEST_ID, self::CACHE_RECOMMENDED_ID]);
 
         $this->addFlash('notice', 'Publicación borrada con exito!');
 
@@ -170,7 +177,7 @@ class PublicacionController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function delete(Request $request, Publicacion $publicacion): Response
+    public function delete(Request $request, Publicacion $publicacion, Cache $cache): Response
     {
         if($request->isMethod('POST')){
 
@@ -183,6 +190,8 @@ class PublicacionController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->remove($publicacion);
             $em->flush();
+
+            $cache->deleteMultiple([self::CACHE_LATEST_ID, self::CACHE_RECOMMENDED_ID]);
 
             $this->addFlash('notice', 'Publicación eliminada con exito!');
 

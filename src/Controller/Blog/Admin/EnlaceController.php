@@ -2,24 +2,25 @@
 
 namespace App\Controller\Blog\Admin;
 
+use App\Service\Cache;
 use App\Entity\Blog\Enlace;
 use App\Form\Blog\EnlaceType;
 use App\Repository\Blog\EnlaceRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- *  Blog Enlace controller.
- *
- *  TODO:Falta la vista de frontend
+ *  Blog Enlace controller
  *
  *  @Route("blog/admin/enlaces")
  */
 class EnlaceController extends AbstractController
 {
+    private const CACHE_ID = 'app_menu_enlace_cache';
+
     /**
      * @Route("/", name="app_blog_admin_enlace_index")
      */
@@ -47,7 +48,7 @@ class EnlaceController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Cache $cache): Response
     {
         $enlace = new Enlace();
         $form = $this->createForm(EnlaceType::class, $enlace);
@@ -58,6 +59,8 @@ class EnlaceController extends AbstractController
 
             $em->persist($enlace);
             $em->flush();
+
+            $cache->delete(self::CACHE_ID);
 
             $this->addFlash('notice', 'Enlace registrado con exito!');
 
@@ -76,7 +79,7 @@ class EnlaceController extends AbstractController
      *      name="app_blog_admin_enlace_edit",
      *      methods={"GET", "POST"})
      */
-    public function edit(Request $request, Enlace $enlace): Response
+    public function edit(Request $request, Enlace $enlace, Cache $cache): Response
     {
         $form = $this->createForm(EnlaceType::class, $enlace);
         $form->handleRequest($request);
@@ -84,6 +87,8 @@ class EnlaceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $this->getDoctrine()->getManager()->flush();
+
+            $cache->delete(self::CACHE_ID);
 
             $this->addFlash('notice', 'Enlace modificado con exito!');
 
@@ -104,7 +109,7 @@ class EnlaceController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function delete(Request $request, Enlace $enlace): Response
+    public function delete(Request $request, Enlace $enlace, Cache $cache): Response
     {
         if($request->isMethod('POST')){
 
@@ -117,6 +122,8 @@ class EnlaceController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->remove($enlace);
             $em->flush();
+
+            $cache->delete(self::CACHE_ID);
 
             $this->addFlash('notice', 'Enlace eliminado con exito!');
 

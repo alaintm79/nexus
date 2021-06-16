@@ -2,6 +2,7 @@
 
 namespace App\Controller\Blog\Admin;
 
+use App\Service\Cache;
 use App\Entity\Blog\Directorio;
 use App\Form\Blog\DirectorioType;
 use Symfony\Component\Filesystem\Filesystem;
@@ -22,6 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class DirectorioController extends AbstractController
 {
     protected $path;
+    private const CACHE_ID = 'app_menu_directorio_cache';
 
     public function __construct()
     {
@@ -42,7 +44,7 @@ class DirectorioController extends AbstractController
      *      methods={"GET"}
      * )
      */
-    public function read (DirectorioRepository $directorios): Response
+    public function list(DirectorioRepository $directorios): Response
     {
         return new JsonResponse($directorios->findAll());
     }
@@ -55,7 +57,7 @@ class DirectorioController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Cache $cache): Response
     {
         $directorio = new Directorio();
         $form = $this->createForm(DirectorioType::class, $directorio);
@@ -75,6 +77,8 @@ class DirectorioController extends AbstractController
             $em->persist($directorio);
             $em->flush();
 
+            $cache->delete(self::CACHE_ID);
+
             $this->addFlash('notice', 'Directorio creado con exito!');
 
             return $this->render('common/notify.html.twig', []);
@@ -92,7 +96,7 @@ class DirectorioController extends AbstractController
      *      name="app_blog_admin_directorio_edit",
      *      methods={"GET", "POST"})
      */
-    public function edit(Request $request, Directorio $directorio): Response
+    public function edit(Request $request, Directorio $directorio, Cache $cache): Response
     {
         $active = $directorio->getRuta();
         $form = $this->createForm(DirectorioType::class, $directorio);
@@ -115,6 +119,8 @@ class DirectorioController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
+            $cache->delete(self::CACHE_ID);
+
             return $this->render('common/notify.html.twig', []);
         }
 
@@ -132,7 +138,7 @@ class DirectorioController extends AbstractController
      *      methods={"GET", "POST"}
      * )
      */
-    public function delete(Request $request, Directorio $directorio): Response
+    public function delete(Request $request, Directorio $directorio, Cache $cache): Response
     {
         if($request->isMethod('POST')){
 
@@ -153,6 +159,8 @@ class DirectorioController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->remove($directorio);
             $em->flush();
+
+            $cache->delete(self::CACHE_ID);
 
             $this->addFlash('notice', 'Directorio eliminado con exito!');
 
