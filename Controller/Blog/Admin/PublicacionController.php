@@ -87,7 +87,7 @@ class PublicacionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            if(($request->request->get('datetime_status') === 'default')){
+            if($request->request->get('datetime_status') === 'default'){
                 $publicacion->setFechaPublicacion(new \DateTime());
             }
 

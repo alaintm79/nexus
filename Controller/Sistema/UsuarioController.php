@@ -35,20 +35,6 @@ class UsuarioController extends AbstractController
     public function index(Request $request, UsuarioRepository $usuario, $estado): Response
     {
         $unidad = $this->isGranted('ROLE_NX_ADMIN') ? 'ALL' : $request->getSession()->get('_unidad');
-
-        // $usuarios = $usuario->findBy(['token' => null], [], 50);
-
-        // dump(count($usuarios));
-
-        // foreach($usuarios as $usuario){
-        //     $usuario->setToken(UsuarioUtil::token());
-        //     $this->getDoctrine()->getManager()->persist($usuario);
-        // }
-
-        // $this->getDoctrine()->getManager()->flush();
-
-        // exit();
-
         $breadcrumb = [
             ['title' => 'Usuarios']
         ];
