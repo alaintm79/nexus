@@ -1,1 +1,0 @@
-"use strict";window.operateEvents={"click .btn-modal-edit":function(a,t,o){modalShow("Modificar Plaza","/sistema/plazas/"+o.id+"/edit","modal-lg")}};var $table=$("#table");$table.bootstrapTable({loadingFontSize:"16px"}),$("#modal").on("hidden.bs.modal",function(a){$table.bootstrapTable("refresh")});
