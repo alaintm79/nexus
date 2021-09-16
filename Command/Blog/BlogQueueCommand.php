@@ -46,11 +46,6 @@ class BlogQueueCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // $context = $this->router->getContext();
-        // $context->setHost('www.etep.une.cu');
-        // $context->setScheme('https');
-        // $context->setBaseUrl('blog');
-
         $output->writeln([
             'Publicado publicaciones en cola',
             ''

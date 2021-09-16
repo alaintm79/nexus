@@ -19,7 +19,7 @@ class BirthdayCommand extends Command
 
     public function __construct(EntityManagerInterface $entityManagerInterface)
     {
-        $this->entityManagerInterface = $entityManagerInterface;
+        $this->em = $entityManagerInterface;
 
         parent::__construct();
     }
@@ -45,14 +45,13 @@ class BirthdayCommand extends Command
         ]);
 
         $fecha = new DateTime('now');
-        $em = $this->entityManagerInterface;
-        $usuarios = $em->getRepository(Usuario::class)->findByDateInCi($fecha->format('md'), $input->getOption('all'));
+        $usuarios = $this->em->getRepository(Usuario::class)->findByDateInCi($fecha->format('md'), $input->getOption('all'));
 
         foreach($usuarios as $usuario){
             $usuario->setEdad(UsuarioUtil::edad($usuario->getCi()));
         }
 
-        $em->flush();
+        $this->em->flush();
 
         $output->writeln('Actualizados: '.\count($usuarios).' usuarios');
 
