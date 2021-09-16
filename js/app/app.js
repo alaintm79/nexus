@@ -26,9 +26,6 @@ const $ = require('jquery');
 // Create global $ and jQuery variables
 global.$ = global.jQuery = $;
 
-// start the Stimulus application
-// import './bootstrap';
-
 import 'overlayscrollbars';
 import 'admin-lte';
 import 'bootstrap/js/dist/modal';
@@ -43,10 +40,7 @@ import 'bootstrap-table/dist/extensions/cookie/bootstrap-table-cookie';
 import 'bootstrap-select';
 import 'bootstrap-select/js/i18n/defaults-es_ES';
 import 'Hinclude/hinclude';
-import swal from 'sweetalert';
-import Inputmask from "inputmask";
 import '../locale/bootstrap-table-es-ES.min';
-
 
 /*** Global Functions ***/
 
@@ -84,9 +78,6 @@ function formValidation() {
     const btnScrollToTop = document.querySelector(".btn-scroll-to-top");
     const rootElement = document.documentElement;
     const TOGGLE_RATIO = 0.05;
-
-    // Obtener los botones con clase .btn-modal a los que aplicar evento click para activar ventana modal
-    let btnModals = document.getElementsByClassName("btn-modal");
 
     // Methods & Functions
     function handleScroll() { // do something on scroll

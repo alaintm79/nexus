@@ -12,7 +12,6 @@
 (function () {
 
     /*** Vars ***/
-    const $table = $('#table');
 
     // Opciones con Filemanager
     const btnSplash = document.getElementById('btnSplash');

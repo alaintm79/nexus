@@ -8,6 +8,8 @@
  * @Update 21062201
  */
 
+import Inputmask from "inputmask";
+
 (function () {
 
     /*** Vars ***/

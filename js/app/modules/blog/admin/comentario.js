@@ -1,11 +1,13 @@
 "use strict";
-/*! publicacion.js
+/*! comentario.js
  * ================
  *
  * @Author Alain TM
  * @Email  <alaintm79@gmail.com>
  * @Update 21062001
  */
+
+import swal from 'sweetalert';
 
 (function () {
 
@@ -49,8 +51,8 @@
 
         return [
             '<div class="btn-group btn-group-sm" role="group" aria-label="Acciones">',
-            row.isDelete == false ? btnEdit : btnRestore,
-            (row.isReview == false) && (row.isDelete == false) ? btnApprove : ``,
+            row.isDelete ? btnRestore : btnEdit,
+            (!row.isReview) && (!row.isDelete) ? btnApprove : ``,
             row.isDelete ? btnRemove : btnDelete,
             '</div>'
         ].join('');

@@ -11,7 +11,6 @@
 (function () {
 
     /*** Vars ***/
-    const $table = $('#table');
 
     /*** Methods & Functions ***/
     window.operateFormatter = function (value, row, index) {

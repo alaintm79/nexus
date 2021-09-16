@@ -13,7 +13,6 @@
 (function () {
 
     /*** Vars ***/
-    const $table = $('#table');
 
     /*** Methods & Functions ***/
 

@@ -8,6 +8,9 @@
  * @Update 21062001
  */
 
+import swal from 'sweetalert';
+import Inputmask from "inputmask";
+
 (function () {
 
     // Vars

@@ -7,6 +7,8 @@
  * @Update 21062201
  */
 
+import swal from 'sweetalert';
+
 (function () {
 
     /*** Vars ***/

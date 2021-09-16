@@ -6,6 +6,8 @@
  * @Update 21062001
  */
 
+import Inputmask from "inputmask";
+
 (function () {
 
     /*** Vars ***/
@@ -31,7 +33,7 @@
 
 	/*** Inits & Event Listeners ***/
     Inputmask().mask(document.querySelectorAll("input"));
-    
+
     if(hasAccount.checked){
         userAccount();
     }

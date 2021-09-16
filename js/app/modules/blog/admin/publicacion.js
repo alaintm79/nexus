@@ -6,6 +6,7 @@
  * @Email  <alaintm79@gmail.com>
  * @Update 21062001
  */
+import swal from 'sweetalert';
 
 (function () {
 
@@ -18,7 +19,6 @@
 
     /*** Methods & Functions ***/
     window.operateFormatter = function (value, row, index) {
-        window.operateFormatter = function (value, row, index) {
 
             let btnEdit = [
                 `<button class="btn btn-secondary btn-edit" title="Editar">`,
@@ -46,11 +46,10 @@
 
             return [
                 '<div class="btn-group btn-group-sm" role="group" aria-label="Acciones">',
-                row.isDelete == false ? btnEdit : btnRestore,
+                row.isDelete ? btnRestore : btnEdit,
                 row.isDelete ? btnRemove : btnDelete,
                 '</div>'
             ].join('');
-        }
     }
 
     // Formato para valores de comentarios
