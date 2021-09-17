@@ -2,6 +2,7 @@
 
 namespace App\Controller\Blog\Admin;
 
+use Exception;
 use App\Entity\Blog\Comentario;
 use App\Form\Blog\Admin\ComentarioType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -199,7 +200,17 @@ class ComentarioController extends AbstractController
      */
     public function batch(Request $request, EntityManagerInterface $em): Response
     {
+        $whitelist = [
+            '/blog/admin/comentarios/estado/pendiente',
+            '/blog/admin/comentarios/estado/aprobado',
+            '/blog/admin/comentarios/estado/eliminado',
+        ];
+
         $redirectTo = $request->request->get('redirect_to');
+
+        if(!\in_array($redirectTo, $whitelist)){
+            throw new Exception("Error de url de retorno ".$redirectTo, 1);
+        }
 
         if (!$this->isCsrfTokenValid('bulk-action', $request->request->get('token'))
             || !$request->request->has('id')
