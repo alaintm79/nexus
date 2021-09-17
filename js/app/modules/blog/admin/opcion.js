@@ -53,7 +53,7 @@
             let thumbSplash = document.getElementById('thumbSplash');
 
             setInterval(function () {
-                fileManager.contentWindow.document.querySelectorAll('.select').forEach(el => el.addEventListener('click', event => {
+                fileManager.contentWindow.document.querySelectorAll('.select').forEach(el => el.addEventListener('click', (event) => {
                     pathSplash.value = event.target.getAttribute("data-path");
                     thumbSplash.style.backgroundImage = "url(' " + pathSplash.value + " ')";
                     document.getElementById('btnSplashSubmit').disabled = false;
@@ -64,14 +64,14 @@
         });
     });
 
-    btnSplashRemove.addEventListener('click', event => {
+    btnSplashRemove.addEventListener('click', (event) => {
         document.getElementById('thumbSplash').style.backgroundImage = "";
         document.getElementById('btnSplashSubmit').disabled = false;
 
         event.preventDefault();
     });
 
-    btnLogo.addEventListener('click', event => {
+    btnLogo.addEventListener('click', (event) => {
 
         $('#modalFile').modal('show');
 
@@ -80,7 +80,7 @@
             let thumbLogo = document.getElementById('thumbLogo');
 
             setInterval(function () {
-                fileManager.contentWindow.document.querySelectorAll('.select').forEach(el => el.addEventListener('click', event => {
+                fileManager.contentWindow.document.querySelectorAll('.select').forEach(el => el.addEventListener('click', (event) => {
                     pathLogo.value = event.target.getAttribute("data-path");
                     thumbLogo.style.backgroundImage = "url(' " + pathLogo.value + " ')";
                     document.getElementById('btnLogoSubmit').disabled = false;
@@ -91,12 +91,12 @@
         });
     });
 
-    btnLogoRemove.addEventListener('click', event => {
+    btnLogoRemove.addEventListener('click', (event) => {
         document.getElementById('thumbLogo').style.backgroundImage = "";
         document.getElementById('btnLogoSubmit').disabled = false;
     });
 
-    btnSidebar.addEventListener('click', event => {
+    btnSidebar.addEventListener('click', (event) => {
 
         $('#modalFile').modal('show');
 
@@ -105,7 +105,7 @@
             let thumbSidebar = document.getElementById('thumbSidebar');
 
             setInterval(function () {
-                fileManager.contentWindow.document.querySelectorAll('.select').forEach(el => el.addEventListener('click', event => {
+                fileManager.contentWindow.document.querySelectorAll('.select').forEach(el => el.addEventListener('click', (event) => {
                     pathSidebar.value = event.target.getAttribute("data-path");
                     thumbSidebar.style.backgroundImage = "url(' " + pathSidebar.value + " ')";
                     document.getElementById('btnSidebarSubmit').disabled = false;
@@ -116,7 +116,7 @@
         });
     });
 
-    btnSidebarRemove.addEventListener('click', event => {
+    btnSidebarRemove.addEventListener('click', (event) => {
         document.getElementById('thumbSidebar').style.backgroundImage = "";
         document.getElementById('btnSidebarSubmit').disabled = false;
     });

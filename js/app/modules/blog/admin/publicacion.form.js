@@ -93,11 +93,19 @@
         let timeInit = time.value;
 
         date.addEventListener('input', () => {
-            (date.value !== dateInit || time.value !== timeInit) ? datetimeStatus.value = 'modified' : datetimeStatus.value = 'default';
+            if(date.value !== dateInit || time.value !== timeInit) {
+                datetimeStatus.value = 'modified';
+            } else {
+                datetimeStatus.value = 'default';
+            }
         });
 
         time.addEventListener('input', () => {
-            (time.value !== timeInit || date.value !== dateInit) ? datetimeStatus.value = 'modified' : datetimeStatus.value = 'default';
+            if(time.value !== timeInit || date.value !== dateInit){
+                datetimeStatus.value = 'modified';
+            } else {
+                datetimeStatus.value = 'default';
+            }
         });
     }
 })();
