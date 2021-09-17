@@ -333,6 +333,8 @@ class PublicacionController extends AbstractController
                     case 'no_relevante':
                         $row->setIsSticky(\false);
                         break;
+                    default:
+                        break;
                 }
 
                 ++$i;
