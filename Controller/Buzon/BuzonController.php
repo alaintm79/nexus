@@ -103,10 +103,6 @@ class BuzonController extends AbstractController
      */
     public function show(Mensaje $mensaje/*  = null */): Response
     {
-
-        // if (\is_null($mensaje)) {
-        //     exit();
-        // }
         $breadcrumb = [
             ['title' => 'Buzón', 'url' => $this->generateUrl('app_buzon_index')],
             ['title' => 'Mensaje']
