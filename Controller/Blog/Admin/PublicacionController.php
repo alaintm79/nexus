@@ -261,7 +261,18 @@ class PublicacionController extends AbstractController
      */
     public function batch(Request $request, EntityManagerInterface $em, Cache $cache): Response
     {
+        $whitelist = [
+            '/blog/admin/publicaciones/estado/publicado',
+            '/blog/admin/publicaciones/estado/borrador',
+            '/blog/admin/publicaciones/estado/eliminado',
+            '/blog/admin/publicaciones/estado/programado',
+        ];
+
         $redirectTo = $request->request->get('redirect_to');
+
+        if(!\in_array($redirectTo, $whitelist)){
+            throw new \InvalidArgumentException('Error de url de retorno');
+        }
 
         if (!$this->isCsrfTokenValid('bulk-action', $request->request->get('token'))
             || !$request->request->has('id')

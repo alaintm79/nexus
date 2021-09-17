@@ -106,7 +106,14 @@ class BackupController extends AbstractController
      */
     public function restore(string $file): Response
     {
+        $pattern = "/[a-zA-Z0-9\.\-]/";
         $fs = new Filesystem();
+
+        // dump($file, preg_match($pattern, $file)); exit();
+
+        if (!preg_match($pattern, $file)) {
+            throw new \InvalidArgumentException('Error en nombre de archivo');
+        }
 
         if ($fs->exists($this->path . '/' . $file) && null !== $file) {
             $exec = '/bin/bash ' . __DIR__ . '/../../../bin/pgrestore.sh ' . $file;
