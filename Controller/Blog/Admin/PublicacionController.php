@@ -301,19 +301,7 @@ class PublicacionController extends AbstractController
 
         if($action !== 'eliminar'){
             foreach ($q->toIterable() as $row) {
-                // if($action === 'borrar'){
-                //     $row->setIsDelete(\true);
-                // }elseif($action === 'borrador'){
-                //     $row->setEstado($em->getReference('App:Blog\Estado', 1));
-                // }elseif($action === 'publicado'){
-                //     $row->setEstado($em->getReference('App:Blog\Estado', 2));
-                // }elseif($action === 'restaurar'){
-                //     $row->setIsDelete(\false);
-                // }elseif($action === 'es_relevante'){
-                //     $row->setIsSticky(\true);
-                // }elseif($action === 'no_relevante'){
-                //     $row->setIsSticky(\false);
-                // }
+                
                 switch($action){
                     case 'borrar':
                         $row->setIsDelete(\true);

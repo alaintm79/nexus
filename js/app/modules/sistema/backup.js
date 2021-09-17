@@ -5,6 +5,7 @@
  * @Email  <alaintm79@gmail.com>
  * @Update 21062201
  */
+import swal from 'sweetalert';
 
 (function () {
 
