@@ -2,7 +2,6 @@
 
 namespace App\Controller\Blog\Admin;
 
-use Exception;
 use App\Entity\Blog\Comentario;
 use App\Form\Blog\Admin\ComentarioType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -209,7 +208,7 @@ class ComentarioController extends AbstractController
         $redirectTo = $request->request->get('redirect_to');
 
         if(!\in_array($redirectTo, $whitelist)){
-            throw new Exception("Error de url de retorno ".$redirectTo, 1);
+            throw new \InvalidArgumentException('Error de url de retorno');
         }
 
         if (!$this->isCsrfTokenValid('bulk-action', $request->request->get('token'))
