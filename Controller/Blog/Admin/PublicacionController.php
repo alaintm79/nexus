@@ -267,16 +267,14 @@ class PublicacionController extends AbstractController
             '/blog/admin/publicaciones/estado/eliminado',
             '/blog/admin/publicaciones/estado/programado',
         ];
-
+        $token = $request->request->get('token');
         $redirectTo = $request->request->get('redirect_to');
 
         if(!\in_array($redirectTo, $whitelist)){
             throw new \InvalidArgumentException('Error de url de retorno');
         }
 
-        if (!$this->isCsrfTokenValid('bulk-action', $request->request->get('token'))
-            || !$request->request->has('id')
-        ) {
+        if (!$this->isCsrfTokenValid('bulk-action', $token) || !$request->request->has('id')){
             $this->addFlash('error', 'Imposible ejecutar la acción, datos no validos o nulos');
 
             return new RedirectResponse($redirectTo);
@@ -285,26 +283,56 @@ class PublicacionController extends AbstractController
         $data = $request->request->all();
         $ids = implode(', ', $data['id']);
         $action = $data['action'];
+        $cmd = 'SELECT p';
         $batchSize = 20;
         $i = 1;
 
-        $dql = ($action !== 'eliminar' ? 'SELECT p' : 'DELETE') . ' FROM App\Entity\Blog\Publicacion p WHERE p.id IN ('.$ids.')';
+        if($action == 'eliminar'){
+            $cmd = 'DELETE';
+        }
+
+        $dql = \sprintf('%s FROM App\Entity\Blog\Publicacion p WHERE p.id IN (%s)', $cmd, $ids);
+
         $q = $em->createQuery($dql);
+
+        if($action === 'eliminar'){
+            $q->execute();
+        }
 
         if($action !== 'eliminar'){
             foreach ($q->toIterable() as $row) {
-                if($action === 'borrar'){
-                    $row->setIsDelete(\true);
-                }elseif($action === 'borrador'){
-                    $row->setEstado($em->getReference('App:Blog\Estado', 1));
-                }elseif($action === 'publicado'){
-                    $row->setEstado($em->getReference('App:Blog\Estado', 2));
-                }elseif($action === 'restaurar'){
-                    $row->setIsDelete(\false);
-                }elseif($action === 'es_relevante'){
-                    $row->setIsSticky(\true);
-                }elseif($action === 'no_relevante'){
-                    $row->setIsSticky(\false);
+                // if($action === 'borrar'){
+                //     $row->setIsDelete(\true);
+                // }elseif($action === 'borrador'){
+                //     $row->setEstado($em->getReference('App:Blog\Estado', 1));
+                // }elseif($action === 'publicado'){
+                //     $row->setEstado($em->getReference('App:Blog\Estado', 2));
+                // }elseif($action === 'restaurar'){
+                //     $row->setIsDelete(\false);
+                // }elseif($action === 'es_relevante'){
+                //     $row->setIsSticky(\true);
+                // }elseif($action === 'no_relevante'){
+                //     $row->setIsSticky(\false);
+                // }
+                switch($action){
+                    case 'borrar':
+                        $row->setIsDelete(\true);
+                        break;
+                    case 'borrador':
+                        $row->setEstado($em->getReference('App:Blog\Estado', 1));
+                        break;
+                    case 'publicado':
+                        $row->setEstado($em->getReference('App:Blog\Estado', 2));
+                        break;
+                    case 'restaurar':
+                        $row->setIsDelete(\false);
+                        break;
+                    case 'es_relevante':
+                        $row->setIsSticky(\true);
+                        break;
+                    case 'no_relevante':
+                        $row->setIsSticky(\false);
+                        break;
                 }
 
                 ++$i;
@@ -318,8 +346,6 @@ class PublicacionController extends AbstractController
             $em->flush();
             $em->clear();
 
-        }elseif($action === 'eliminar'){
-            $q->execute();
         }
 
         $cache->deleteMultiple([self::CACHE_LATEST_ID, self::CACHE_RECOMMENDED_ID]);

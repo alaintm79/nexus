@@ -109,8 +109,6 @@ class BackupController extends AbstractController
         $pattern = "/[a-zA-Z0-9\.\-]/";
         $fs = new Filesystem();
 
-        // dump($file, preg_match($pattern, $file)); exit();
-
         if (!preg_match($pattern, $file)) {
             throw new \InvalidArgumentException('Error en nombre de archivo');
         }
