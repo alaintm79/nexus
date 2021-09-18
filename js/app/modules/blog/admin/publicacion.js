@@ -15,12 +15,6 @@ import swal from 'sweetalert';
     const btnAction = document.querySelector("#btnAction");
     const estado = document.querySelector("#table").dataset.estado;
     const form = document.querySelector("#form");
-    
-    if(estado != 'eliminado'){
-        const url = '/remove';
-    } else {
-        const url = '/delete';
-    }
 
     /*** Methods & Functions ***/
     window.operateFormatter = function (value, row, index) {
@@ -67,17 +61,6 @@ import swal from 'sweetalert';
     btnAction.addEventListener('click', (event) => {
         let selected = action.options[action.selectedIndex].value;
 
-        // if (selected === 'eliminar') {
-        //     swal({
-        //         text: "Esta seguro de eliminar permanentemente las publicaciones seleccionadas",
-        //         buttons: true,
-        //         dangerMode: true,
-        //     }).then((willDelete) => {
-        //         form.submit();
-        //     });
-        // } else if (selected !== 'eliminar') {
-        //     form.submit();
-        // }
         switch (selected){
             case 'eliminar':
                 swal({
@@ -102,41 +85,29 @@ import swal from 'sweetalert';
             event.preventDefault();
         },
         'click .btn-delete': function (event, value, row, index) {
-            switch (url){
-                case '/delete':
-                    window.location.href = '/blog/admin/publicaciones/' + row.id + url;
-                    event.preventDefault();
-                break;
-                case '/remove':
+            switch (estado) {
+                case 'publicado':
+                case 'borrador':
+                case 'programado':
                     swal({
                         text: "Esta seguro de eliminar la publicación " + row.titulo,
                         buttons: true,
                         dangerMode: true,
                     })
                     .then((willDelete) => {
-                        window.location.href = '/blog/admin/publicaciones/' + row.id + url;
-                        event.preventDefault();
+                        if(willDelete){
+                            window.location.href = '/blog/admin/publicaciones/' + row.id + '/delete';
+                            event.preventDefault();
+                        }
                     });
+
                     event.preventDefault();
                 break;
-                default:
+                case 'eliminado':
+                    window.location.href = '/blog/admin/publicaciones/' + row.id + '/remove';
+                    event.preventDefault();
+                break;
             }
-            // if (url === '/delete') {
-            //     window.location.href = '/blog/admin/publicaciones/' + row.id + url;
-            //     event.preventDefault();
-            // }
-
-            // if (url === '/remove') {
-            //     swal({
-            //         text: "Esta seguro de eliminar la publicación " + row.titulo,
-            //         buttons: true,
-            //         dangerMode: true,
-            //     })
-            //     .then((willDelete) => {
-            //         window.location.href = '/blog/admin/publicaciones/' + row.id + url;
-            //         event.preventDefault();
-            //     });
-            // }
 
             event.preventDefault();
         },
