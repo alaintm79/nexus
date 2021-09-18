@@ -61,18 +61,18 @@ import swal from 'sweetalert';
     btnAction.addEventListener('click', (event) => {
         let selected = action.options[action.selectedIndex].value;
 
-        switch (selected){
-            case 'eliminar':
-                swal({
-                    text: "Esta seguro de eliminar permanentemente las publicaciones seleccionadas",
-                    buttons: true,
-                    dangerMode: true,
-                }).then((willDelete) => {
+        if(selected == 'eliminar'){
+            swal({
+                text: "Esta seguro de eliminar permanentemente las publicaciones seleccionadas",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if(willDelete){
                     form.submit();
-                });
-            break;
-            default:
-                form.submit();
+                }
+            });
+        } else {
+            form.submit();
         }
 
         event.preventDefault()
