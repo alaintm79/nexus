@@ -4,10 +4,7 @@ namespace App\Controller\System;
 
 use App\Entity\System\User;
 use Doctrine\ORM\QueryBuilder;
-use App\Entity\System\UserInfo;
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Asset;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -20,7 +17,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -139,24 +135,15 @@ class UserCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        // $totalReport = Action::new('totalReport')
-        //     ->linkToUrl('#')
-        //     ->setLabel('Reporte de totales')
-        //     ->addCssClass('btn btn-success')
-        //     ->setIcon('fa fa-download')
-        //     ->createAsGlobalAction();
-
         return parent::configureActions($actions)
                     ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                         return $action
                                     ->setIcon('fa fa-plus')
                                     ->setLabel('Registrar');
                     })
-                    // ->add(Crud::PAGE_INDEX, $totalReport)
                     ->add(Crud::PAGE_INDEX, Action::DETAIL)
                     ->remove(Crud::PAGE_INDEX, Action::DELETE)
                     ->remove(Crud::PAGE_DETAIL, Action::DELETE);
-                ;
     }
 
     public function configureFilters(Filters $filters): Filters

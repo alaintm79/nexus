@@ -34,6 +34,5 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Bajas', 'far fa-circle', User::class)->setController(UserDeletedCrudController::class),
         ]);
         yield MenuItem::linkToLogout('Salir', 'fa fa-fw fa-sign-out');
-        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }
