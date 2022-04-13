@@ -325,21 +325,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\IsTrue(message: "Cuenta de usuario no definida")]
     public function isAccountValid(): bool
     {
-        if(null !== $this->getPassword() && empty($this->getUserIdentifier()))
-        {
+        if((null !== $this->getPassword()
+        || null !== $this->getRoles()
+        || null !== $this->getEmail())
+        && empty($this->getUserIdentifier())){
+
             return false;
         }
-
-        if(null !== $this->getRoles() && empty($this->getUserIdentifier()))
-        {
-            return false;
-        }
-
-        if(null !== $this->getEmail() && empty($this->getUserIdentifier()))
-        {
-            return false;
-        }
-
-        return true;
+         return true;
     }
 }

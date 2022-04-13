@@ -28,5 +28,18 @@ class UserChecker implements UserCheckerInterface
 
     public function checkPostAuth(UserInterface $user): void
     {
+        if (!$user instanceof AppUser) {
+            return;
+        }
+
+        if ($user->getIsDisabled()) {
+            // the message passed to this exception is meant to be displayed to the user
+            throw new CustomUserMessageAccountStatusException('Su cuenta de usuario esta deshabilitada.');
+        }
+
+        if ($user->getIsDeleted()) {
+            // the message passed to this exception is meant to be displayed to the user
+            throw new CustomUserMessageAccountStatusException('Su cuenta de usuario no existe.');
+        }
     }
 }
