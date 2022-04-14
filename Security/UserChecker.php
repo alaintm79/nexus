@@ -15,11 +15,6 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        if ($user->getIsDisabled()) {
-            // the message passed to this exception is meant to be displayed to the user
-            throw new CustomUserMessageAccountStatusException('Su cuenta de usuario esta deshabilitada.');
-        }
-
         if ($user->getIsDeleted()) {
             // the message passed to this exception is meant to be displayed to the user
             throw new CustomUserMessageAccountStatusException('Su cuenta de usuario no existe.');
@@ -35,11 +30,6 @@ class UserChecker implements UserCheckerInterface
         if ($user->getIsDisabled()) {
             // the message passed to this exception is meant to be displayed to the user
             throw new CustomUserMessageAccountStatusException('Su cuenta de usuario esta deshabilitada.');
-        }
-
-        if ($user->getIsDeleted()) {
-            // the message passed to this exception is meant to be displayed to the user
-            throw new CustomUserMessageAccountStatusException('Su cuenta de usuario no existe.');
         }
     }
 }
