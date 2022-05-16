@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\System;
+namespace App\Controller\IT;
 
+use App\Controller\IT\LineCrudController;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -11,14 +12,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 
-class UserDeletedCrudController extends UserCrudController
+class LineDeletedCrudController extends LineCrudController
 {
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
         $unit = $this->isGranted('ROLE_ADMIN') ? 'ALL' : $this->getUser()->getUnit()->getUnit();
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters)
-                    ->andWhere('entity.isDeleted = :deleted')
-                    ->setParameter('deleted', true);
+                    ->andWhere('s.state = :state')
+                    ->setParameter('state', 'Baja');
+
+        $qb->andWhere($qb->expr()->in('s.state', ':state'))
+            ->setParameter('state', ['Baja']);
 
         if($unit !== 'ALL'){
             $qb->andWhere('u.unit = :unit')
@@ -33,17 +37,22 @@ class UserDeletedCrudController extends UserCrudController
     {
         return parent::configureCrud($crud)
                     ->setPageTitle('index', function (){
-                        return '<i class="menu-icon fa-fw fa fas fa-users"></i> Usuarios / Bajas';
+                        return '<i class="menu-icon fa-fw fa fas fa-sim-card"></i> Líneas / Bajas';
                     })
+                    ->setEntityPermission('ROLE_ADMIN')
         ;
     }
 
     public function configureActions(Actions $actions): Actions
     {
+        $formAction = Action::new('form', 'form');
+
         return parent::configureActions($actions)
                     ->remove(Crud::PAGE_INDEX, Action::NEW)
                     ->remove(Crud::PAGE_INDEX, Action::EDIT)
                     ->remove(Crud::PAGE_DETAIL, Action::EDIT)
+                    ->remove(Crud::PAGE_DETAIL, $formAction)
+                    ->remove(Crud::PAGE_INDEX, $formAction)
         ;
     }
 }

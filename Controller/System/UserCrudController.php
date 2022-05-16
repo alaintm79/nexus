@@ -4,24 +4,21 @@ namespace App\Controller\System;
 
 use App\Entity\System\User;
 use Doctrine\ORM\QueryBuilder;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
-use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
-use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserCrudController extends AbstractCrudController
@@ -37,30 +34,41 @@ class UserCrudController extends AbstractCrudController
 
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-        return parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters)
+        $unit = $this->isGranted('ROLE_ADMIN') ? 'ALL' : $this->getUser()->getUnit()->getUnit();
+        $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters)
+                    ->leftJoin('entity.unit', 'u')
                     ->andWhere('entity.isDeleted = :deleted')
                     ->setParameter('deleted', false);
+
+        if($unit !== 'ALL'){
+            $qb->andWhere('u.unit = :unit')
+                ->setParameter('unit', $unit);
+            ;
+        }
+
+        return $qb;
     }
 
     public function configureCrud(Crud $crud): Crud
     {
         return parent::configureCrud($crud)
                     ->setPageTitle('index', function (){
-                        return 'Usuarios activos';
+                        return '<i class="menu-icon fa-fw fa fas fa-users"></i> Usuarios / Activos';
                     })
                     ->setPageTitle('new', function (){
-                        return 'Registrar';
+                        return '<i class="menu-icon fa-fw fa fas fa-users"></i> Registrar';
                     })
                     ->setPageTitle('edit', function (){
-                        return 'Modificar';
+                        return '<i class="menu-icon fa-fw fa fas fa-users"></i> Modificar';
                     })
                     ->setPageTitle('detail', function (User $user){
-                        return 'Usuario '.$user->getFirstName().' '.$user->getLastname();
+                        return '<i class="menu-icon fa-fw fa fas fa-users"></i> Usuario '.$user->getFirstName().' '.$user->getLastname();
                     })
                     ->setFormOptions(['error_mapping' => [
-                            'ciValid' => 'idCard',
-                            'accountValid' => 'username'
+                        'ciValid' => 'idCard',
+                        'accountValid' => 'username'
                     ]])
+                    ->overrideTemplate('crud/index', 'crud/user.html.twig')
         ;
     }
 
@@ -77,15 +85,33 @@ class UserCrudController extends AbstractCrudController
             TextField::new('idCard')
                 ->setLabel('Carnet')
                 ->setColumns('col-12 col-lg-4')
+                ->setFormTypeOptions([
+                    'attr' => [
+                        'maxlength' => '11',
+                        'pattern' => '\d*'
+                    ]
+                ])
                 ->hideOnIndex(),
             AssociationField::new('unit')
                 ->setLabel('Unidad')
+                ->setRequired(true)
+                ->setFormTypeOptions([
+                    'placeholder' => ''
+                ])
                 ->setColumns('col-12 col-lg-4'),
             AssociationField::new('job')
                 ->setLabel('Plaza')
+                ->setRequired(true)
+                ->setFormTypeOptions([
+                    'placeholder' => ''
+                ])
                 ->setColumns('col-12 col-lg-4'),
             AssociationField::new('area')
                 ->setLabel('Area')
+                ->setRequired(true)
+                ->setFormTypeOptions([
+                    'placeholder' => ''
+                ])
                 ->setColumns('col-12 col-lg-4'),
             FormField::addPanel('Cuenta de usuario'),
             TextField::new('username')
@@ -129,7 +155,8 @@ class UserCrudController extends AbstractCrudController
             BooleanField::new('isDeleted')
                 ->setLabel('Baja')
                 ->setColumns('col-12 col-lg-3')
-                ->onlyWhenUpdating()
+                ->hideOnIndex()
+                ->hideWhenCreating()
         ];
     }
 
@@ -142,24 +169,6 @@ class UserCrudController extends AbstractCrudController
                                     ->setLabel('Registrar');
                     })
                     ->add(Crud::PAGE_INDEX, Action::DETAIL)
-                    ->remove(Crud::PAGE_INDEX, Action::DELETE)
-                    ->remove(Crud::PAGE_DETAIL, Action::DELETE);
-    }
-
-    public function configureFilters(Filters $filters): Filters
-    {
-        return parent::configureFilters($filters)
-                    ->add(TextFilter::new('username')->setLabel('Usuario'))
-                    ->add(TextFilter::new('firstname')->setLabel('Nombre'))
-                    ->add(TextFilter::new('lastname')->setLabel('Apellidos'))
-                ;
-    }
-
-    public function configureAssets(Assets $assets): Assets
-    {
-        return parent::configureAssets($assets)
-                    ->addWebpackEncoreEntry('admin')
-                    ->addWebpackEncoreEntry('app')
-        ;
+                    ;
     }
 }
